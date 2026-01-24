@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 
 // Giá trị mặc định cho Model URL (Teachable Machine)
-const DEFAULT_MODEL_URL = 'https://teachablemachine.withgoogle.com/models/i8CfIt9Xj/'
+const DEFAULT_MODEL_URL = 'https://teachablemachine.withgoogle.com/models/TAk-XTRr3/'
+const MODEL_URL_STORAGE_KEY = 'aireborn_model_url'
 
 const AppContext = createContext(null)
 
@@ -9,8 +10,15 @@ export function AppProvider({ children }) {
   // Admin: thông tin đăng nhập (chỉ lưu trong state)
   const [adminUser, setAdminUser] = useState(null)
 
-  // Model Teachable Machine
-  const [modelURL, setModelURL] = useState(DEFAULT_MODEL_URL)
+  // Model Teachable Machine - Load từ localStorage hoặc dùng default
+  const [modelURL, setModelURL] = useState(() => {
+    try {
+      const saved = localStorage.getItem(MODEL_URL_STORAGE_KEY)
+      return saved || DEFAULT_MODEL_URL
+    } catch {
+      return DEFAULT_MODEL_URL
+    }
+  })
 
   // Danh sách sản phẩm tái chế đã tạo
   const [products, setProducts] = useState([])
@@ -37,6 +45,13 @@ export function AppProvider({ children }) {
   const updateModelURL = useCallback((url) => {
     const normalized = url.endsWith('/') ? url : url + '/'
     setModelURL(normalized)
+    // Lưu vào localStorage để persist
+    try {
+      localStorage.setItem(MODEL_URL_STORAGE_KEY, normalized)
+      console.log('✅ Model URL saved to localStorage:', normalized)
+    } catch (err) {
+      console.warn('⚠️ Failed to save model URL to localStorage:', err)
+    }
   }, [])
 
   const addRecognition = useCallback((label, confidence, imageUrl = null) => {
