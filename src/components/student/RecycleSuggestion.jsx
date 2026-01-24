@@ -41,8 +41,12 @@ export default function RecycleSuggestion() {
 
     const call = async () => {
       try {
-        const { suggestion: s, conversationId: cid } = await getRecycleIdea(wasteName, conversationId)
-        console.log('Received suggestion:', s)
+        // Luôn reset conversationId khi có wasteName mới để bắt đầu conversation mới
+        // Chỉ dùng conversationId cũ khi retry (retryCount > 0)
+        const freshConversationId = retryCount === 0 ? '' : conversationId
+        console.log('🟡 Calling API with wasteName:', wasteName, 'conversationId:', freshConversationId, 'retryCount:', retryCount)
+        const { suggestion: s, conversationId: cid } = await getRecycleIdea(wasteName, freshConversationId)
+        console.log('🟡 Received suggestion:', s)
         if (!cancelled) {
           setSuggestion(s)
           setConversationIdFromApi(cid)

@@ -254,6 +254,7 @@ export default function WasteRecognition() {
 
   const goToSuggestion = () => {
     if (result && result.confidence >= MIN_CONFIDENCE) {
+      console.log('🟢 Navigating to suggestion with wasteName:', result.label, 'confidence:', result.confidence)
       navigate('/suggestion', { state: { wasteName: result.label, confidence: result.confidence } })
     }
   }

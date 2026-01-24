@@ -8,19 +8,23 @@ const API_KEY = 'Bearer app-M8VZInDYwONaXsRyK9GYrtIq'
  * @returns {Promise<{ suggestion: object, conversationId: string }>}
  */
 export async function getRecycleIdea(wasteName, conversationId = '') {
+  console.log('🔵 getRecycleIdea called with:', { wasteName, conversationId })
+  const requestBody = {
+    inputs: {},
+    query: wasteName,
+    response_mode: 'blocking',
+    conversation_id: conversationId || '',
+    user: 'aireborn',
+  }
+  console.log('🔵 Request body:', requestBody)
+  
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
       Authorization: API_KEY,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      inputs: {},
-      query: wasteName,
-      response_mode: 'blocking',
-      conversation_id: conversationId || '',
-      user: 'aireborn',
-    }),
+    body: JSON.stringify(requestBody),
   })
 
   if (!response.ok) {
