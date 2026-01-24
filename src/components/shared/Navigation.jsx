@@ -1,6 +1,30 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Leaf, LayoutDashboard, Camera, Sparkles, Package, Award, LogOut, Shield } from 'lucide-react'
+import { Leaf, LayoutDashboard, Camera, Sparkles, Package, Award, LogOut } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
+
+// Icon khiên với cây bên trong
+function ShieldTreeIcon({ className }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Khiên */}
+      <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3z" />
+      {/* Cây - thân */}
+      <path d="M12 14v4" strokeWidth="2" />
+      {/* Cây - lá (hình tròn) */}
+      <circle cx="12" cy="10" r="3" fill="currentColor" opacity="0.8" />
+      <circle cx="10" cy="8" r="2" fill="currentColor" opacity="0.6" />
+      <circle cx="14" cy="8" r="2" fill="currentColor" opacity="0.6" />
+    </svg>
+  )
+}
 
 export default function Navigation() {
   const location = useLocation()
@@ -56,7 +80,7 @@ export default function Navigation() {
                 to="/admin/login"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium hover:bg-green-500/80 transition"
               >
-                <Shield className="w-4 h-4" />
+                <ShieldTreeIcon className="w-4 h-4" />
                 Admin
               </Link>
             )}
