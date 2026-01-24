@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Sparkles, Loader2, AlertCircle, ArrowRight, Package } from 'lucide-react'
+import { Sparkles, Loader2, AlertCircle, ArrowRight, Package, FileText, Wrench, ListOrdered, Heart, Shield } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { getRecycleIdea } from '../../api/llm'
 import LoadingSpinner from '../shared/LoadingSpinner'
@@ -167,92 +167,127 @@ export default function RecycleSuggestion() {
   const safety = Array.isArray(safetyRaw) ? safetyRaw : safetyRaw ? [safetyRaw] : []
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-bold text-green-700 mb-2 flex items-center gap-2">
         <Sparkles className="w-7 h-7" />
         Bước 2: Gợi ý tái chế
       </h1>
-      <p className="text-gray-600 mb-6">Loại rác: <strong>{wasteName}</strong></p>
+      <p className="text-gray-600 mb-6">Loại rác: <strong className="text-green-700">{wasteName}</strong></p>
 
-      <div className="bg-white rounded-xl shadow-lg border border-green-100 overflow-hidden mb-6">
-        <div className="bg-green-50 px-6 py-4 border-b border-green-100">
-          <h2 className="text-lg font-semibold text-green-800">{name || 'Sản phẩm tái chế'}</h2>
-        </div>
-        <div className="p-6 space-y-6">
-          {desc ? (
-            <div>
-              <h3 className="font-semibold text-green-700 mb-1">Mô tả ngắn</h3>
-              <p className="text-gray-700">{desc}</p>
-            </div>
-          ) : (
-            <div>
-              <h3 className="font-semibold text-green-700 mb-1">Mô tả ngắn</h3>
-              <p className="text-gray-500 italic">Đang tải mô tả...</p>
-            </div>
-          )}
-          {materials.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-green-700 mb-1">Vật liệu cần có</h3>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                {materials.map((m, i) => (
-                  <li key={i}>{typeof m === 'string' ? m : m?.ten ?? m}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {steps.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-green-700 mb-1">Các bước thực hiện</h3>
-              <ol className="list-decimal list-inside text-gray-700 space-y-1">
-                {steps.map((s, i) => (
-                  <li key={i}>{typeof s === 'string' ? s : s?.noi_dung ?? s}</li>
-                ))}
-              </ol>
-            </div>
-          )}
-          {benefits.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-green-700 mb-1">Lợi ích</h3>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                {benefits.map((b, i) => (
-                  <li key={i}>{typeof b === 'string' ? b : b}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {safety.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-amber-700 mb-1">Lưu ý an toàn</h3>
-              <ul className="list-disc list-inside text-amber-800 space-y-1">
-                {safety.map((s, i) => (
-                  <li key={i}>{typeof s === 'string' ? s : s}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-        <div className="px-6 pb-6">
-          <button
-            onClick={handleCreateProduct}
-            className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg"
-          >
-            <Package className="w-5 h-5" />
-            Tạo sản phẩm & lưu vào Dashboard
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
+      {/* Tên sản phẩm - Card lớn */}
+      <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 mb-6 text-white">
+        <h2 className="text-2xl font-bold">{name || 'Sản phẩm tái chế'}</h2>
       </div>
 
+      <div className="space-y-4 mb-6">
+        {/* Mô tả ngắn */}
+        {desc && (
+          <div className="bg-white rounded-xl shadow-md border border-green-100 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <FileText className="w-5 h-5 text-green-600" />
+              <h3 className="font-semibold text-green-700 text-lg">Mô tả ngắn</h3>
+            </div>
+            <p className="text-gray-700 leading-relaxed pl-7">{desc}</p>
+          </div>
+        )}
+
+        {/* Vật liệu cần có */}
+        {materials.length > 0 && (
+          <div className="bg-white rounded-xl shadow-md border border-blue-100 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Wrench className="w-5 h-5 text-blue-600" />
+              <h3 className="font-semibold text-blue-700 text-lg">Vật liệu cần có</h3>
+            </div>
+            <ul className="space-y-2 pl-7">
+              {materials.map((m, i) => (
+                <li key={i} className="flex gap-2 text-gray-700">
+                  <span className="text-blue-500 flex-shrink-0 leading-6">•</span>
+                  <span className="leading-6">{typeof m === 'string' ? m : m?.ten ?? m}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Các bước thực hiện */}
+        {steps.length > 0 && (
+          <div className="bg-white rounded-xl shadow-md border border-purple-100 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <ListOrdered className="w-5 h-5 text-purple-600" />
+              <h3 className="font-semibold text-purple-700 text-lg">Các bước thực hiện</h3>
+            </div>
+            <ol className="space-y-3 pl-7">
+              {steps.map((s, i) => (
+                <li key={i} className="flex gap-3 text-gray-700">
+                  <span className="flex-shrink-0 w-6 h-6 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-sm font-semibold">
+                    {i + 1}
+                  </span>
+                  <span className="leading-6">{typeof s === 'string' ? s : s?.noi_dung ?? s}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {/* Lợi ích */}
+        {benefits.length > 0 && (
+          <div className="bg-white rounded-xl shadow-md border border-green-100 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Heart className="w-5 h-5 text-green-600" />
+              <h3 className="font-semibold text-green-700 text-lg">Lợi ích</h3>
+            </div>
+            <ul className="space-y-2 pl-7">
+              {benefits.map((b, i) => (
+                <li key={i} className="flex gap-2 text-gray-700">
+                  <span className="text-green-500 flex-shrink-0 leading-6">•</span>
+                  <span className="leading-6">{typeof b === 'string' ? b : b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Lưu ý an toàn */}
+        {safety.length > 0 && (
+          <div className="bg-amber-50 rounded-xl shadow-md border-2 border-amber-200 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className="w-5 h-5 text-amber-700" />
+              <h3 className="font-semibold text-amber-800 text-lg">Lưu ý an toàn</h3>
+            </div>
+            <ul className="space-y-2 pl-7">
+              {safety.map((s, i) => (
+                <li key={i} className="text-amber-900 leading-6">
+                  {typeof s === 'string' ? s : s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Nút tạo sản phẩm */}
+      <div className="bg-white rounded-xl shadow-lg border border-green-200 p-6 mb-6">
+        <button
+          onClick={handleCreateProduct}
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 rounded-lg transition shadow-md hover:shadow-lg"
+        >
+          <Package className="w-5 h-5" />
+          Tạo sản phẩm & lưu vào Dashboard
+          <ArrowRight className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Nút điều hướng */}
       <div className="flex gap-4">
         <button
           onClick={() => navigate('/')}
-          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg"
+          className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition"
         >
           Nhận diện lại
         </button>
         <button
           onClick={() => navigate('/dashboard')}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+          className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition"
         >
           Xem Green Dashboard
         </button>
