@@ -14,6 +14,7 @@ export default function WasteRecognition() {
   const streamRef = useRef(null)
   const modelRef = useRef(null)
   const loopRef = useRef(null)
+  const capturedRef = useRef(false) // Flag để dừng loop sau khi chụp ảnh
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -59,6 +60,7 @@ export default function WasteRecognition() {
     setError('')
     setResult(null)
     setPreviewImage(null)
+    capturedRef.current = false // Reset flag khi bật lại webcam
     
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop())
@@ -111,6 +113,11 @@ export default function WasteRecognition() {
     const runPrediction = async () => {
       if (!isRunning) return
       
+      // Dừng loop nếu đã chụp ảnh
+      if (capturedRef.current) {
+        return
+      }
+      
       // Kiểm tra video đã sẵn sàng
       if (!video || video.readyState < 2 || video.videoWidth === 0 || video.videoHeight === 0) {
         loopRef.current = requestAnimationFrame(runPrediction)
@@ -128,7 +135,7 @@ export default function WasteRecognition() {
       try {
         if (modelRef.current && video) {
           const { top } = await predictImage(modelRef.current, video)
-          if (isRunning && top) {
+          if (isRunning && top && !capturedRef.current) {
             setResult({ label: top.className, confidence: top.probability })
           }
         }
@@ -137,7 +144,7 @@ export default function WasteRecognition() {
         // Tiếp tục loop ngay cả khi có lỗi
       }
       
-      if (isRunning) {
+      if (isRunning && !capturedRef.current) {
         loopRef.current = requestAnimationFrame(runPrediction)
       }
     }
@@ -174,6 +181,16 @@ export default function WasteRecognition() {
     ctx.drawImage(video, 0, 0)
     const dataUrl = canvas.toDataURL('image/jpeg', 0.9)
     setPreviewImage(dataUrl)
+    
+    // Đánh dấu đã chụp để dừng prediction loop
+    capturedRef.current = true
+    
+    // Dừng prediction loop
+    if (loopRef.current) {
+      cancelAnimationFrame(loopRef.current)
+      loopRef.current = null
+    }
+    
     predictImage(modelRef.current, canvas).then(({ top, predictions }) => {
       // Validate class name
       const validClasses = predictions.map(p => p.className)
@@ -279,6 +296,7 @@ export default function WasteRecognition() {
             setResult(null)
             setPreviewImage(null)
             setError('')
+            capturedRef.current = false // Reset flag để cho phép prediction loop chạy lại
             // Dừng stream cũ nếu có
             if (streamRef.current) {
               streamRef.current.getTracks().forEach((t) => t.stop())
@@ -300,6 +318,7 @@ export default function WasteRecognition() {
             setResult(null)
             setPreviewImage(null)
             setWebcamOk(false)
+            capturedRef.current = false // Reset flag
             // Dừng stream webcam
             if (streamRef.current) {
               streamRef.current.getTracks().forEach((t) => t.stop())
