@@ -15,11 +15,12 @@ export default function GreenDashboard() {
     recognitionHistory.forEach(({ label, timestamp, imageUrl }) => {
       events.push({ type: 'recognition', label, imageUrl, date: new Date(timestamp) })
     })
-    products.forEach(({ name, wasteType, createdAt }) => {
+    products.forEach(({ name, wasteType, createdAt, image }) => {
       events.push({
         type: 'product',
         name,
         wasteType,
+        image,
         date: new Date(createdAt),
       })
     })
@@ -138,6 +139,12 @@ export default function GreenDashboard() {
                   src={ev.imageUrl}
                   alt={ev.label}
                   className="w-12 h-12 rounded-lg object-cover border-2 border-blue-200 shrink-0"
+                />
+              ) : ev.type === 'product' && ev.image ? (
+                <img
+                  src={ev.image}
+                  alt={ev.name}
+                  className="w-12 h-12 rounded-lg object-cover border-2 border-green-200 shrink-0"
                 />
               ) : (
                 <div
