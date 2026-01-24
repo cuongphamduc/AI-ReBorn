@@ -49,7 +49,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <AppProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/aireborn">
         <div className="min-h-screen bg-green-50">
           <Navigation />
           <main className="max-w-6xl mx-auto py-8">
