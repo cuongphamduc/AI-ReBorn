@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 // Giá trị mặc định cho Model URL (Teachable Machine)
 const DEFAULT_MODEL_URL = 'https://teachablemachine.withgoogle.com/models/TAk-XTRr3/'
 const MODEL_URL_STORAGE_KEY = 'aireborn_model_url'
+const PRODUCTS_STORAGE_KEY = 'aireborn_products'
+const RECOGNITION_HISTORY_STORAGE_KEY = 'aireborn_recognition_history'
 
 const AppContext = createContext(null)
 
@@ -20,11 +22,25 @@ export function AppProvider({ children }) {
     }
   })
 
-  // Danh sách sản phẩm tái chế đã tạo
-  const [products, setProducts] = useState([])
+  // Danh sách sản phẩm tái chế đã tạo - Load từ localStorage
+  const [products, setProducts] = useState(() => {
+    try {
+      const saved = localStorage.getItem(PRODUCTS_STORAGE_KEY)
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
 
-  // Lịch sử nhận diện rác (để thống kê)
-  const [recognitionHistory, setRecognitionHistory] = useState([])
+  // Lịch sử nhận diện rác (để thống kê) - Load từ localStorage
+  const [recognitionHistory, setRecognitionHistory] = useState(() => {
+    try {
+      const saved = localStorage.getItem(RECOGNITION_HISTORY_STORAGE_KEY)
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
 
   // Conversation ID cho API chat LLM
   const [conversationId, setConversationId] = useState('')
@@ -54,11 +70,29 @@ export function AppProvider({ children }) {
     }
   }, [])
 
+  // Sync recognitionHistory với localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(RECOGNITION_HISTORY_STORAGE_KEY, JSON.stringify(recognitionHistory))
+    } catch (err) {
+      console.warn('⚠️ Failed to save recognition history to localStorage:', err)
+    }
+  }, [recognitionHistory])
+
+  // Sync products với localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products))
+    } catch (err) {
+      console.warn('⚠️ Failed to save products to localStorage:', err)
+    }
+  }, [products])
+
   const addRecognition = useCallback((label, confidence, imageUrl = null) => {
-    setRecognitionHistory((prev) => [
-      ...prev,
-      { id: Date.now().toString() + Math.random().toString(36).substr(2, 9), label, confidence, imageUrl, timestamp: new Date().toISOString() },
-    ])
+    setRecognitionHistory((prev) => {
+      const newItem = { id: Date.now().toString() + Math.random().toString(36).substr(2, 9), label, confidence, imageUrl, timestamp: new Date().toISOString() }
+      return [...prev, newItem]
+    })
   }, [])
 
   const clearRecognitionHistory = useCallback(() => {
@@ -74,10 +108,10 @@ export function AppProvider({ children }) {
   }, [])
 
   const addProduct = useCallback((product) => {
-    setProducts((prev) => [
-      ...prev,
-      { ...product, id: Date.now().toString(), createdAt: new Date().toISOString() },
-    ])
+    setProducts((prev) => {
+      const newProduct = { ...product, id: Date.now().toString(), createdAt: new Date().toISOString() }
+      return [...prev, newProduct]
+    })
   }, [])
 
   const setConversationIdFromApi = useCallback((id) => {
