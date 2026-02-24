@@ -47,48 +47,56 @@ export default function GreenDashboard() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-green-700 mb-8 flex items-center gap-2">
-        <Leaf className="w-7 h-7" />
-        Green Dashboard
-      </h1>
+    <div className="max-w-4xl mx-auto p-6 animate-fade-in-up">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-md shadow-green-500/20">
+            <Leaf className="w-5 h-5 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-gradient">Green Dashboard</h1>
+        </div>
+        <p className="text-gray-400 text-sm ml-12">Theo dõi hành trình tái chế của bạn</p>
+      </div>
 
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100 flex items-center gap-4">
-          <div className="p-3 bg-green-100 rounded-xl">
-            <Package className="w-8 h-8 text-green-600" />
+        <div className="card-interactive p-5 flex items-center gap-4 group">
+          <div className="p-3 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl shadow-md shadow-green-500/20 group-hover:shadow-green-500/30 transition-shadow">
+            <Package className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Tổng sản phẩm tái chế</p>
-            <p className="text-2xl font-bold text-green-700">{totalProducts}</p>
+            <p className="text-sm text-gray-400">Tổng sản phẩm tái chế</p>
+            <p className="text-2xl font-bold text-gray-800">{totalProducts}</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100 flex items-center gap-4">
-          <div className="p-3 bg-amber-100 rounded-xl">
-            <Award className="w-8 h-8 text-amber-600" />
+        <div className="card-interactive p-5 flex items-center gap-4 group">
+          <div className="p-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-md shadow-amber-500/20 group-hover:shadow-amber-500/30 transition-shadow">
+            <Award className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Điểm Xanh</p>
-            <p className="text-2xl font-bold text-amber-700">{greenScore}</p>
-            <p className="text-xs text-gray-500">(sản phẩm × 10)</p>
+            <p className="text-sm text-gray-400">Điểm Xanh</p>
+            <p className="text-2xl font-bold text-gray-800">{greenScore}</p>
+            <p className="text-xs text-gray-400">(sản phẩm × 10)</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100 flex items-center gap-4">
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <Camera className="w-8 h-8 text-blue-600" />
+        <div className="card-interactive p-5 flex items-center gap-4 group">
+          <div className="p-3 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
+            <Camera className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Lượt nhận diện</p>
-            <p className="text-2xl font-bold text-blue-700">{recognitionHistory.length}</p>
+            <p className="text-sm text-gray-400">Lượt nhận diện</p>
+            <p className="text-2xl font-bold text-gray-800">{recognitionHistory.length}</p>
           </div>
         </div>
       </div>
 
+      {/* My Products Section */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-green-700">Sản phẩm của tôi</h2>
+        <h2 className="text-lg font-semibold text-gray-800">Sản phẩm của tôi</h2>
         <Link
           to="/product"
-          className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
+          className="btn-primary flex items-center gap-2 text-sm py-2"
         >
           <Plus className="w-4 h-4" />
           Thêm sản phẩm
@@ -96,13 +104,15 @@ export default function GreenDashboard() {
       </div>
 
       {products.length === 0 ? (
-        <div className="bg-green-50 rounded-xl border border-green-100 p-8 text-center">
-          <Package className="w-12 h-12 text-green-400 mx-auto mb-2" />
-          <p className="text-green-700 font-medium mb-2">Chưa có sản phẩm nào</p>
-          <p className="text-gray-600 text-sm mb-4">Nhận diện rác → Lấy gợi ý → Tạo sản phẩm và lưu tại đây.</p>
+        <div className="card-interactive p-8 text-center mb-8">
+          <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <Package className="w-7 h-7 text-green-400" />
+          </div>
+          <p className="text-gray-700 font-medium mb-1">Chưa có sản phẩm nào</p>
+          <p className="text-gray-400 text-sm mb-5">Nhận diện rác → Lấy gợi ý → Tạo sản phẩm và lưu tại đây.</p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
+            className="btn-primary inline-flex items-center gap-2"
           >
             <Camera className="w-4 h-4" />
             Bắt đầu nhận diện
@@ -113,19 +123,19 @@ export default function GreenDashboard() {
           {products.map((p) => (
             <div
               key={p.id}
-              className="bg-white rounded-xl shadow-lg border border-green-100 overflow-hidden"
+              className="card-interactive overflow-hidden group"
             >
-              <div className="aspect-square bg-green-50 flex items-center justify-center">
+              <div className="aspect-square bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center overflow-hidden">
                 {p.image ? (
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <Package className="w-12 h-12 text-green-400" />
+                  <Package className="w-10 h-10 text-green-300" />
                 )}
               </div>
               <div className="p-3">
-                <p className="font-semibold text-green-800 truncate">{p.name}</p>
-                <p className="text-xs text-gray-500">{p.wasteType}</p>
-                <p className="text-xs text-gray-400">
+                <p className="font-semibold text-gray-800 truncate text-sm">{p.name}</p>
+                <p className="text-xs text-gray-400">{p.wasteType}</p>
+                <p className="text-xs text-gray-300 mt-0.5">
                   {new Date(p.createdAt).toLocaleDateString('vi-VN')}
                 </p>
               </div>
@@ -134,51 +144,54 @@ export default function GreenDashboard() {
         </div>
       )}
 
-      <h2 className="text-lg font-semibold text-green-700 mb-4">Timeline hoạt động</h2>
+      {/* Timeline */}
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">Timeline hoạt động</h2>
       {timeline.length === 0 ? (
-        <div className="bg-gray-50 rounded-xl border border-gray-200 p-6 text-center text-gray-500">
+        <div className="card-interactive p-6 text-center text-gray-400">
           Chưa có hoạt động nào.
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-lg border border-green-100 divide-y divide-green-100">
+        <div className="card-interactive divide-y divide-gray-100/80">
           {timeline.map((ev, i) => (
-            <div key={i} className="flex items-center gap-4 p-4">
+            <div key={i} className="flex items-center gap-4 p-4 hover:bg-green-50/30 transition-colors duration-200">
               {ev.type === 'recognition' && ev.imageUrl ? (
                 <img
                   src={ev.imageUrl}
                   alt={ev.label}
-                  className="w-12 h-12 rounded-lg object-cover border-2 border-blue-200 shrink-0"
+                  className="w-11 h-11 rounded-xl object-cover border-2 border-blue-100 shrink-0 shadow-sm"
                 />
               ) : ev.type === 'product' && ev.image ? (
                 <img
                   src={ev.image}
                   alt={ev.name}
-                  className="w-12 h-12 rounded-lg object-cover border-2 border-green-200 shrink-0"
+                  className="w-11 h-11 rounded-xl object-cover border-2 border-green-100 shrink-0 shadow-sm"
                 />
               ) : (
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                    ev.type === 'product' ? 'bg-green-100' : 'bg-blue-100'
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    ev.type === 'product' 
+                      ? 'bg-gradient-to-br from-green-400 to-emerald-500' 
+                      : 'bg-gradient-to-br from-blue-400 to-indigo-500'
                   }`}
                 >
                   {ev.type === 'product' ? (
-                    <Package className="w-5 h-5 text-green-600" />
+                    <Package className="w-4 h-4 text-white" />
                   ) : (
-                    <Camera className="w-5 h-5 text-blue-600" />
+                    <Camera className="w-4 h-4 text-white" />
                   )}
                 </div>
               )}
               <div className="flex-1 min-w-0">
                 {ev.type === 'product' ? (
                   <>
-                    <p className="font-medium text-green-800">Đã tạo: {ev.name}</p>
-                    <p className="text-sm text-gray-500">Từ: {ev.wasteType}</p>
+                    <p className="font-medium text-gray-800 text-sm">Đã tạo: {ev.name}</p>
+                    <p className="text-xs text-gray-400">Từ: {ev.wasteType}</p>
                   </>
                 ) : (
-                  <p className="font-medium text-blue-800">Nhận diện: {ev.label}</p>
+                  <p className="font-medium text-gray-800 text-sm">Nhận diện: {ev.label}</p>
                 )}
               </div>
-              <span className="text-sm text-gray-500 shrink-0">{formatDate(ev.date)}</span>
+              <span className="text-xs text-gray-400 shrink-0">{formatDate(ev.date)}</span>
             </div>
           ))}
         </div>

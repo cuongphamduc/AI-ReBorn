@@ -89,42 +89,45 @@ export default function Statistics() {
   }, [recognitionHistory, products])
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 animate-fade-in-up">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-green-700">Dashboard thống kê</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gradient">Dashboard thống kê</h1>
+          <p className="text-sm text-gray-400 mt-1">Tổng quan hoạt động nhận diện và tái chế</p>
+        </div>
         {recognitionHistory.length > 0 && (
           <button
             onClick={() => setShowConfirm(true)}
-            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98] text-sm"
           >
             <Trash2 className="w-4 h-4" />
-            Xóa toàn bộ lịch sử nhận diện
+            Xóa toàn bộ lịch sử
           </button>
         )}
       </div>
 
       {showConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full border border-red-200">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full border border-red-100 animate-scale-in">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
+              <div className="p-2.5 bg-red-100 rounded-xl">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
               </div>
-              <h2 className="text-lg font-bold text-red-700">Xác nhận xóa</h2>
+              <h2 className="text-lg font-bold text-gray-800">Xác nhận xóa</h2>
             </div>
-            <p className="text-gray-700 mb-6">
-              Bạn có chắc chắn muốn xóa toàn bộ <strong>{recognitionHistory.length}</strong> lượt nhận diện? Hành động này không thể hoàn tác.
+            <p className="text-gray-600 mb-6 text-sm">
+              Bạn có chắc chắn muốn xóa toàn bộ <strong className="text-red-600">{recognitionHistory.length}</strong> lượt nhận diện? Hành động này không thể hoàn tác.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={handleClear}
-                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 active:scale-[0.98]"
               >
                 Xóa
               </button>
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition"
+                className="flex-1 btn-secondary"
               >
                 Hủy
               </button>
@@ -134,49 +137,53 @@ export default function Statistics() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100 flex items-center gap-4">
-          <div className="p-3 bg-green-100 rounded-xl">
-            <Trash2 className="w-8 h-8 text-green-600" />
+        <div className="card-interactive p-5 flex items-center gap-4 group">
+          <div className="p-3 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl shadow-md shadow-green-500/20 group-hover:shadow-green-500/30 transition-shadow">
+            <Trash2 className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Tổng lượt nhận diện rác</p>
-            <p className="text-2xl font-bold text-green-700">{recognitionHistory.length}</p>
+            <p className="text-sm text-gray-400">Tổng lượt nhận diện rác</p>
+            <p className="text-2xl font-bold text-gray-800">{recognitionHistory.length}</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100 flex items-center gap-4">
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <Package className="w-8 h-8 text-blue-600" />
+        <div className="card-interactive p-5 flex items-center gap-4 group">
+          <div className="p-3 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
+            <Package className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Sản phẩm tái chế đã tạo</p>
-            <p className="text-2xl font-bold text-blue-700">{totalRecycled}</p>
+            <p className="text-sm text-gray-400">Sản phẩm tái chế đã tạo</p>
+            <p className="text-2xl font-bold text-gray-800">{totalRecycled}</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100 flex items-center gap-4">
-          <div className="p-3 bg-amber-100 rounded-xl">
-            <Award className="w-8 h-8 text-amber-600" />
+        <div className="card-interactive p-5 flex items-center gap-4 group">
+          <div className="p-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-md shadow-amber-500/20 group-hover:shadow-amber-500/30 transition-shadow">
+            <Award className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Điểm Xanh (×10)</p>
-            <p className="text-2xl font-bold text-amber-700">{totalRecycled * 10}</p>
+            <p className="text-sm text-gray-400">Điểm Xanh (×10)</p>
+            <p className="text-2xl font-bold text-gray-800">{totalRecycled * 10}</p>
           </div>
         </div>
       </div>
 
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-green-700">Lịch sử nhận diện</h2>
+          <h2 className="text-lg font-semibold text-gray-800">Lịch sử nhận diện</h2>
           <div className="flex gap-2">
             <button
               onClick={() => setShowHistory(!showHistory)}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+              className={`font-semibold py-2 px-4 rounded-xl transition-all duration-200 text-sm ${
+                showHistory 
+                  ? 'bg-blue-500 text-white shadow-md' 
+                  : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+              }`}
             >
               {showHistory ? 'Ẩn danh sách' : 'Hiển thị danh sách'}
             </button>
             {selectedIds.size > 0 && (
               <button
                 onClick={handleDeleteSelected}
-                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-200 text-sm"
               >
                 <Trash2 className="w-4 h-4" />
                 Xóa đã chọn ({selectedIds.size})
@@ -186,8 +193,8 @@ export default function Statistics() {
         </div>
 
         {showHistory && recognitionHistory.length > 0 && (
-          <div className="bg-white rounded-xl shadow-lg border border-green-100 mb-6">
-            <div className="p-4 border-b border-green-100 flex items-center justify-between">
+          <div className="card-interactive mb-6 overflow-hidden">
+            <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-2">
                 {selectedIds.size === recognitionHistory.length ? (
                   <button onClick={deselectAll} className="text-green-600 hover:text-green-700">
@@ -198,39 +205,39 @@ export default function Statistics() {
                     <Square className="w-5 h-5" />
                   </button>
                 )}
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-500">
                   {selectedIds.size > 0 ? `Đã chọn ${selectedIds.size}/${recognitionHistory.length}` : 'Chọn tất cả'}
                 </span>
               </div>
             </div>
-            <div className="divide-y divide-green-100 max-h-96 overflow-y-auto">
+            <div className="divide-y divide-gray-100/80 max-h-96 overflow-y-auto">
               {recognitionHistory.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 p-4 hover:bg-green-50">
+                <div key={item.id} className="flex items-center gap-4 p-4 hover:bg-green-50/30 transition-colors duration-200">
                   <input
                     type="checkbox"
                     checked={selectedIds.has(item.id)}
                     onChange={() => toggleSelect(item.id)}
-                    className="w-5 h-5 text-green-600 rounded focus:ring-green-500"
+                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
                   />
                   {item.imageUrl && (
                     <img
                       src={item.imageUrl}
                       alt={item.label}
-                      className="w-16 h-16 rounded-lg object-cover border border-green-200"
+                      className="w-14 h-14 rounded-xl object-cover border border-gray-100 shadow-sm"
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-green-800">{item.label}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="font-medium text-gray-800 text-sm">{item.label}</p>
+                    <p className="text-xs text-gray-400">
                       Độ tin cậy: {(item.confidence * 100).toFixed(1)}% • {formatDate(item.timestamp)}
                     </p>
                   </div>
                   <button
                     onClick={() => removeRecognition(item.id)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
                     title="Xóa"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               ))}
@@ -239,32 +246,40 @@ export default function Statistics() {
         )}
 
         {showHistory && recognitionHistory.length === 0 && (
-          <div className="bg-gray-50 rounded-xl border border-gray-200 p-6 text-center text-gray-500 mb-6">
+          <div className="card-interactive p-6 text-center text-gray-400 mb-6">
             Chưa có lịch sử nhận diện.
           </div>
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100">
-          <h2 className="text-lg font-semibold text-green-700 mb-4">Số lượng rác nhận diện theo loại</h2>
+        <div className="card-interactive p-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Số lượng rác nhận diện theo loại</h2>
           {barData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="count" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} />
+                <YAxis tick={{ fontSize: 12, fill: '#6b7280' }} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                />
+                <Bar dataKey="count" fill="url(#greenGradient)" radius={[6, 6, 0, 0]} />
+                <defs>
+                  <linearGradient id="greenGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#4ade80" />
+                    <stop offset="100%" stopColor="#16a34a" />
+                  </linearGradient>
+                </defs>
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-gray-500 py-8 text-center">Chưa có dữ liệu nhận diện.</p>
+            <p className="text-gray-400 py-8 text-center text-sm">Chưa có dữ liệu nhận diện.</p>
           )}
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100">
-          <h2 className="text-lg font-semibold text-green-700 mb-4">Top 3 loại rác phổ biến</h2>
+        <div className="card-interactive p-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Top 3 loại rác phổ biến</h2>
           {top3.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -275,17 +290,21 @@ export default function Statistics() {
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
+                  innerRadius={40}
                   label={({ name, count }) => `${name} (${count})`}
+                  stroke="none"
                 >
                   {top3.map((_, i) => (
                     <Cell key={i} fill={top3[i].color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-gray-500 py-8 text-center">Chưa có dữ liệu.</p>
+            <p className="text-gray-400 py-8 text-center text-sm">Chưa có dữ liệu.</p>
           )}
         </div>
       </div>

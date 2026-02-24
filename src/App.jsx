@@ -74,11 +74,17 @@ export default function App() {
   return (
     <AppProvider>
       <BrowserRouter basename="/aireborn">
-        <div className="min-h-screen bg-green-50">
+        <div className="min-h-screen">
           <Navigation />
-          <main className="max-w-6xl mx-auto py-8">
-            <AppRoutes />
+          <main className="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div className="page-enter">
+              <AppRoutes />
+            </div>
           </main>
+          {/* Footer đơn giản */}
+          <footer className="mt-12 py-6 text-center text-sm text-gray-400 border-t border-green-100/50">
+            <p>🌱 AI ReBorn - GreenLab • Tái chế thông minh cùng AI</p>
+          </footer>
         </div>
       </BrowserRouter>
     </AppProvider>

@@ -32,44 +32,59 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center p-6">
-      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full border border-green-100">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Leaf className="w-10 h-10 text-green-600" />
-          <h1 className="text-2xl font-bold text-green-700">Đăng nhập Admin</h1>
+    <div className="min-h-[60vh] flex items-center justify-center p-6 animate-fade-in">
+      <div className="w-full max-w-md">
+        {/* Card đăng nhập với hiệu ứng glass */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-card hover:shadow-card-hover p-8 border border-green-100/50 transition-all duration-300">
+          {/* Logo và tiêu đề */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30 mb-4 animate-bounce-in">
+              <Leaf className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-gradient">Đăng nhập Admin</h1>
+            <p className="text-gray-400 text-sm mt-1">Quản lý hệ thống AI ReBorn</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Tên đăng nhập</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="input-field"
+                placeholder="Nhập tên đăng nhập"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Mật khẩu</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm animate-fade-in">
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full btn-primary flex items-center justify-center gap-2 py-3"
+            >
+              <LogIn className="w-4 h-4" />
+              Đăng nhập
+            </button>
+          </form>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-green-700 mb-1">Tên đăng nhập</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              placeholder="admin"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-green-700 mb-1">Mật khẩu</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              placeholder="••••••••"
-              required
-            />
-          </div>
-          {error && <p className="text-red-600 text-sm">{error}</p>}
-          <button
-            type="submit"
-            className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition"
-          >
-            <LogIn className="w-4 h-4" />
-            Đăng nhập
-          </button>
-        </form>
       </div>
     </div>
   )

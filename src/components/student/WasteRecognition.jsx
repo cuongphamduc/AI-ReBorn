@@ -6,9 +6,10 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Camera, Upload, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
+import { Camera, Upload, Loader2, AlertCircle, CheckCircle, Scan, ArrowRight } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { loadTeachableModel, predictImage } from '../../utils/teachableMachine'
+import LoadingSpinner from '../shared/LoadingSpinner'
 
 // Ngưỡng độ tin cậy tối thiểu (50%) - dưới ngưỡng này sẽ cảnh báo kết quả không chắc chắn
 const MIN_CONFIDENCE = 0.5
@@ -283,44 +284,58 @@ export default function WasteRecognition() {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto p-6 flex flex-col items-center justify-center gap-4">
-        <Loader2 className="w-12 h-12 animate-spin text-green-600" />
-        <p className="text-green-700 font-medium">Đang tải model nhận diện...</p>
+      <div className="max-w-2xl mx-auto p-6 flex flex-col items-center justify-center gap-4 min-h-[40vh]">
+        <LoadingSpinner size="lg" label="Đang tải model nhận diện..." />
       </div>
     )
   }
 
   if (error && !webcamOk && !result && !modelRef.current) {
     return (
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-2 text-red-700 mb-4">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          {error}
+      <div className="max-w-2xl mx-auto p-6 animate-fade-in">
+        <div className="card-interactive p-6">
+          <div className="flex items-center gap-3 p-4 bg-red-50 rounded-xl text-red-700 mb-4">
+            <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <p className="text-sm">{error}</p>
+          </div>
+          <p className="text-gray-500 text-sm mb-4">Admin vui lòng kiểm tra URL model tại trang Quản lý Model.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-primary"
+          >
+            Thử lại
+          </button>
         </div>
-        <p className="text-gray-600 mb-4">Admin vui lòng kiểm tra URL model tại trang Quản lý Model.</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
-        >
-          Thử lại
-        </button>
       </div>
     )
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-green-700 mb-6">Bước 1: Nhận diện rác</h1>
+    <div className="max-w-2xl mx-auto p-6 animate-fade-in-up">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-md shadow-green-500/20">
+            <Scan className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gradient">Bước 1: Nhận diện rác</h1>
+            <p className="text-sm text-gray-400">Sử dụng webcam hoặc tải ảnh để AI phân loại</p>
+          </div>
+        </div>
+      </div>
 
-      <div className="flex gap-2 mb-4">
+      {/* Mode Tabs */}
+      <div className="flex gap-2 mb-5 p-1 bg-green-100/50 rounded-2xl">
         <button
           onClick={() => {
             setMode('webcam')
             setResult(null)
             setPreviewImage(null)
             setError('')
-            capturedRef.current = false // Reset flag để cho phép prediction loop chạy lại
-            // Dừng stream cũ nếu có
+            capturedRef.current = false
             if (streamRef.current) {
               streamRef.current.getTracks().forEach((t) => t.stop())
               streamRef.current = null
@@ -328,11 +343,13 @@ export default function WasteRecognition() {
             setWebcamOk(false)
             startWebcam()
           }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-semibold transition ${
-            mode === 'webcam' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200'
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
+            mode === 'webcam' 
+              ? 'bg-white text-green-700 shadow-md' 
+              : 'text-green-600 hover:text-green-700'
           }`}
         >
-          <Camera className="w-5 h-5" />
+          <Camera className="w-4 h-4" />
           Webcam
         </button>
         <button
@@ -341,8 +358,7 @@ export default function WasteRecognition() {
             setResult(null)
             setPreviewImage(null)
             setWebcamOk(false)
-            capturedRef.current = false // Reset flag
-            // Dừng stream webcam
+            capturedRef.current = false
             if (streamRef.current) {
               streamRef.current.getTracks().forEach((t) => t.stop())
               streamRef.current = null
@@ -351,37 +367,43 @@ export default function WasteRecognition() {
               videoRef.current.srcObject = null
             }
           }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-semibold transition ${
-            mode === 'upload' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200'
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
+            mode === 'upload' 
+              ? 'bg-white text-green-700 shadow-md' 
+              : 'text-green-600 hover:text-green-700'
           }`}
         >
-          <Upload className="w-5 h-5" />
+          <Upload className="w-4 h-4" />
           Tải ảnh
         </button>
       </div>
 
       {error && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-2 text-amber-800 mb-4">
+        <div className="flex items-center gap-2.5 p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 mb-4 animate-fade-in text-sm">
           <AlertCircle className="w-5 h-5 shrink-0" />
           {error}
         </div>
       )}
 
       {mode === 'webcam' && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100 space-y-4">
+        <div className="card-interactive p-5 space-y-4">
           {!webcamOk ? (
-            <div className="aspect-video bg-green-50 rounded-xl flex flex-col items-center justify-center gap-4">
-              <Camera className="w-16 h-16 text-green-400" />
+            <div className="aspect-video bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl flex flex-col items-center justify-center gap-4 border-2 border-dashed border-green-200">
+              <div className="p-4 bg-white rounded-2xl shadow-card animate-float">
+                <Camera className="w-12 h-12 text-green-400" />
+              </div>
+              <p className="text-green-600 font-medium">Camera chưa được bật</p>
               <button
                 onClick={startWebcam}
-                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg"
+                className="btn-primary flex items-center gap-2"
               >
+                <Camera className="w-4 h-4" />
                 Bật webcam
               </button>
             </div>
           ) : (
             <>
-              <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
+              <div className="relative aspect-video bg-black rounded-2xl overflow-hidden shadow-lg group">
                 <video
                   ref={videoRef}
                   autoPlay
@@ -390,13 +412,27 @@ export default function WasteRecognition() {
                   className="w-full h-full object-cover"
                 />
                 <canvas ref={canvasRef} className="hidden" />
+                {/* Overlay viền scan */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-green-400 rounded-tl-lg" />
+                  <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-green-400 rounded-tr-lg" />
+                  <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-green-400 rounded-bl-lg" />
+                  <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-green-400 rounded-br-lg" />
+                </div>
+                {/* Real-time label overlay */}
+                {result && !previewImage && (
+                  <div className="absolute bottom-3 left-3 right-3 bg-black/60 backdrop-blur-sm rounded-xl px-4 py-2 text-white text-sm font-medium flex items-center justify-between">
+                    <span>{result.label}</span>
+                    <span className="text-green-400">{(result.confidence * 100).toFixed(0)}%</span>
+                  </div>
+                )}
               </div>
               <button
                 onClick={capturePhoto}
-                className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg"
+                className="w-full btn-primary flex items-center justify-center gap-2 py-3"
               >
                 <Camera className="w-5 h-5" />
-                Chụp ảnh
+                Chụp ảnh & Nhận diện
               </button>
             </>
           )}
@@ -404,44 +440,71 @@ export default function WasteRecognition() {
       )}
 
       {mode === 'upload' && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-green-100">
-          <label className="flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-green-300 rounded-xl cursor-pointer hover:bg-green-50 transition">
-            <Upload className="w-12 h-12 text-green-500" />
-            <span className="text-green-700 font-medium">Chọn ảnh rác để nhận diện</span>
+        <div className="card-interactive p-5">
+          <label className="flex flex-col items-center justify-center gap-3 py-12 border-2 border-dashed border-green-200 rounded-2xl cursor-pointer hover:bg-green-50/50 hover:border-green-400 transition-all duration-300 group">
+            <div className="p-4 bg-green-50 group-hover:bg-green-100 rounded-2xl transition-colors duration-300">
+              <Upload className="w-10 h-10 text-green-500 group-hover:text-green-600 transition-colors" />
+            </div>
+            <div className="text-center">
+              <span className="text-green-700 font-semibold block">Chọn ảnh rác để nhận diện</span>
+              <span className="text-gray-400 text-sm">JPG, PNG — Kéo thả hoặc click để chọn</span>
+            </div>
             <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
           </label>
         </div>
       )}
 
       {result && (
-        <div className="mt-6 bg-white rounded-xl shadow-lg p-6 border border-green-100">
+        <div className="mt-5 card-interactive p-5 animate-fade-in-up">
           {previewImage && (
             <div className="mb-4">
-              <p className="text-sm font-semibold text-green-700 mb-2">Ảnh đã chụp / tải lên</p>
               <img
                 src={previewImage}
                 alt="Preview"
-                className="w-full max-h-64 object-contain rounded-xl border border-green-200 bg-green-50"
+                className="w-full max-h-64 object-contain rounded-xl border border-green-100 bg-green-50/50"
               />
             </div>
           )}
-          <div className="flex items-center gap-2 text-green-700 font-semibold mb-2">
+          <div className="flex items-center gap-3 mb-3">
             {result.confidence >= MIN_CONFIDENCE ? (
-              <CheckCircle className="w-5 h-5 text-green-500" />
+              <div className="p-2 bg-green-100 rounded-xl">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+              </div>
             ) : (
-              <AlertCircle className="w-5 h-5 text-amber-500" />
+              <div className="p-2 bg-amber-100 rounded-xl">
+                <AlertCircle className="w-5 h-5 text-amber-600" />
+              </div>
             )}
-            Kết quả: {result.label} ({(result.confidence * 100).toFixed(1)}%)
+            <div>
+              <p className="font-bold text-gray-800">{result.label}</p>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden w-32">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      result.confidence >= MIN_CONFIDENCE 
+                        ? 'bg-gradient-to-r from-green-400 to-emerald-500' 
+                        : 'bg-gradient-to-r from-amber-400 to-orange-500'
+                    }`}
+                    style={{ width: `${(result.confidence * 100).toFixed(0)}%` }}
+                  />
+                </div>
+                <span className="text-sm font-semibold text-gray-600">{(result.confidence * 100).toFixed(1)}%</span>
+              </div>
+            </div>
           </div>
+
           {result.confidence >= MIN_CONFIDENCE ? (
             <button
               onClick={goToSuggestion}
-              className="mt-2 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg"
+              className="mt-3 w-full btn-primary flex items-center justify-center gap-2 py-3"
             >
-              Xem gợi ý tái chế →
+              Xem gợi ý tái chế
+              <ArrowRight className="w-4 h-4" />
             </button>
           ) : (
-            <p className="text-amber-700 text-sm">Độ tin cậy thấp. Hãy chụp lại hoặc tải ảnh rõ hơn.</p>
+            <p className="text-amber-600 text-sm bg-amber-50 p-3 rounded-xl mt-2">
+              ⚠️ Độ tin cậy thấp. Hãy chụp lại hoặc tải ảnh rõ hơn.
+            </p>
           )}
         </div>
       )}

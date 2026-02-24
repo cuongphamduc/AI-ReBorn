@@ -62,21 +62,23 @@ export default function ProductCreation() {
 
   if (done) {
     return (
-      <div className="max-w-xl mx-auto p-6">
-        <div className="bg-white rounded-xl shadow-lg p-8 border border-green-100 text-center">
-          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-green-700 mb-2">Đã lưu sản phẩm!</h2>
-          <p className="text-gray-600 mb-6">Sản phẩm của bạn đã được thêm vào Green Dashboard.</p>
-          <div className="flex gap-4 justify-center">
+      <div className="max-w-xl mx-auto p-6 animate-fade-in">
+        <div className="card-interactive p-8 text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-green-500/30 animate-bounce-in">
+            <CheckCircle className="w-8 h-8 text-white" />
+          </div>
+          <h2 className="text-xl font-bold text-gradient mb-2">Đã lưu sản phẩm!</h2>
+          <p className="text-gray-500 mb-6">Sản phẩm của bạn đã được thêm vào Green Dashboard.</p>
+          <div className="flex gap-3 justify-center">
             <button
               onClick={() => navigate('/dashboard')}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg"
+              className="btn-primary"
             >
               Xem Dashboard
             </button>
             <button
               onClick={() => { setDone(false); setName(''); setWasteType(''); setImage(null); }}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg"
+              className="btn-secondary"
             >
               Thêm sản phẩm khác
             </button>
@@ -87,39 +89,47 @@ export default function ProductCreation() {
   }
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-green-700 mb-6 flex items-center gap-2">
-        <Package className="w-7 h-7" />
-        Bước 3: Lưu sản phẩm
-      </h1>
+    <div className="max-w-xl mx-auto p-6 animate-fade-in-up">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-md shadow-green-500/20">
+            <Package className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gradient">Bước 3: Lưu sản phẩm</h1>
+            <p className="text-sm text-gray-400">Nhập thông tin sản phẩm tái chế của bạn</p>
+          </div>
+        </div>
+      </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 border border-green-100 space-y-4">
+      <form onSubmit={handleSubmit} className="card-interactive p-6 space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-green-700 mb-1">Tên sản phẩm</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Tên sản phẩm</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="input-field"
             placeholder="VD: Hộp đựng bút từ chai nhựa"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-green-700 mb-1">Loại rác</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Loại rác</label>
           <input
             type="text"
             value={wasteType}
             onChange={(e) => setWasteType(e.target.value)}
-            className="w-full px-4 py-2 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="input-field"
             placeholder="VD: Chai nhựa"
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-green-700 mb-1">Ảnh sản phẩm hoàn thành</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Ảnh sản phẩm hoàn thành</label>
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="flex flex-col items-center justify-center gap-2 py-6 border-2 border-dashed border-green-300 rounded-xl cursor-pointer hover:bg-green-50 transition"
+            className="flex flex-col items-center justify-center gap-3 py-8 border-2 border-dashed border-green-200 rounded-2xl cursor-pointer hover:bg-green-50/50 hover:border-green-400 transition-all duration-300 group"
           >
             <input
               ref={fileInputRef}
@@ -129,21 +139,30 @@ export default function ProductCreation() {
               className="hidden"
             />
             {image ? (
-              <img src={image} alt="Preview" className="max-h-48 rounded-lg object-contain" />
+              <img src={image} alt="Preview" className="max-h-48 rounded-xl object-contain" />
             ) : (
-              <Upload className="w-12 h-12 text-green-500" />
+              <div className="p-3 bg-green-50 group-hover:bg-green-100 rounded-2xl transition-colors">
+                <Upload className="w-10 h-10 text-green-400 group-hover:text-green-500 transition-colors" />
+              </div>
             )}
-            <span className="text-green-700 font-medium">
+            <span className="text-green-700 font-medium text-sm">
               {image ? 'Đổi ảnh khác' : 'Chọn ảnh tải lên'}
             </span>
           </div>
         </div>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        <div className="flex gap-4 pt-2">
+
+        {error && (
+          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+            <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
+            {error}
+          </div>
+        )}
+
+        <div className="flex gap-3 pt-2">
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg disabled:opacity-50"
+            className="flex-1 btn-primary flex items-center justify-center gap-2 py-3 disabled:opacity-50"
           >
             {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
             Lưu sản phẩm
@@ -151,7 +170,7 @@ export default function ProductCreation() {
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg"
+            className="btn-secondary py-3 px-6"
           >
             Bỏ qua
           </button>

@@ -88,14 +88,16 @@ export default function RecycleSuggestion() {
 
   if (!wasteName) {
     return (
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-2 text-amber-800">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          {error}
+      <div className="max-w-2xl mx-auto p-6 animate-fade-in">
+        <div className="card-interactive p-5 flex items-center gap-3 mb-4">
+          <div className="p-2 bg-amber-100 rounded-xl flex-shrink-0">
+            <AlertCircle className="w-5 h-5 text-amber-600" />
+          </div>
+          <p className="text-amber-800 text-sm">{error}</p>
         </div>
         <button
           onClick={() => navigate('/')}
-          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg"
+          className="btn-primary"
         >
           Quay lại nhận diện rác
         </button>
@@ -105,7 +107,7 @@ export default function RecycleSuggestion() {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto p-6">
+      <div className="max-w-2xl mx-auto p-6 min-h-[40vh] flex items-center justify-center">
         <LoadingSpinner size="lg" label="Đang lấy gợi ý tái chế từ AI..." />
       </div>
     )
@@ -113,22 +115,18 @@ export default function RecycleSuggestion() {
 
   if (error && !suggestion) {
     return (
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-2 text-red-700 mb-4">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          {error}
+      <div className="max-w-2xl mx-auto p-6 animate-fade-in">
+        <div className="card-interactive p-5 flex items-center gap-3 mb-4">
+          <div className="p-2 bg-red-100 rounded-xl flex-shrink-0">
+            <AlertCircle className="w-5 h-5 text-red-600" />
+          </div>
+          <p className="text-red-700 text-sm">{error}</p>
         </div>
-        <div className="flex gap-4">
-          <button
-            onClick={handleRetry}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
-          >
+        <div className="flex gap-3">
+          <button onClick={handleRetry} className="btn-primary">
             Thử lại
           </button>
-          <button
-            onClick={() => navigate('/')}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg"
-          >
+          <button onClick={() => navigate('/')} className="btn-secondary">
             Quay lại nhận diện
           </button>
         </div>
@@ -139,22 +137,18 @@ export default function RecycleSuggestion() {
   // Nếu không có dữ liệu gợi ý sau khi load xong → hiển thị lỗi
   if (!suggestion && !loading) {
     return (
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-2 text-amber-800 mb-4">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          Không nhận được dữ liệu từ API. Vui lòng thử lại.
+      <div className="max-w-2xl mx-auto p-6 animate-fade-in">
+        <div className="card-interactive p-5 flex items-center gap-3 mb-4">
+          <div className="p-2 bg-amber-100 rounded-xl flex-shrink-0">
+            <AlertCircle className="w-5 h-5 text-amber-600" />
+          </div>
+          <p className="text-amber-800 text-sm">Không nhận được dữ liệu từ API. Vui lòng thử lại.</p>
         </div>
-        <div className="flex gap-4">
-          <button
-            onClick={handleRetry}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
-          >
+        <div className="flex gap-3">
+          <button onClick={handleRetry} className="btn-primary">
             Thử lại
           </button>
-          <button
-            onClick={() => navigate('/')}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg"
-          >
+          <button onClick={() => navigate('/')} className="btn-secondary">
             Quay lại nhận diện
           </button>
         </div>
@@ -185,41 +179,54 @@ export default function RecycleSuggestion() {
   const safety = Array.isArray(safetyRaw) ? safetyRaw : safetyRaw ? [safetyRaw] : []
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-green-700 mb-2 flex items-center gap-2">
-        <Sparkles className="w-7 h-7" />
-        Bước 2: Gợi ý tái chế
-      </h1>
-      <p className="text-gray-600 mb-6">Loại rác: <strong className="text-green-700">{wasteName}</strong></p>
+    <div className="max-w-3xl mx-auto p-6 animate-fade-in-up">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-md shadow-green-500/20">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gradient">Bước 2: Gợi ý tái chế</h1>
+            <p className="text-sm text-gray-400">Loại rác: <strong className="text-green-600">{wasteName}</strong></p>
+          </div>
+        </div>
+      </div>
 
-      {/* Tên sản phẩm - Card lớn */}
-      <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 mb-6 text-white">
-        <h2 className="text-2xl font-bold">{name || 'Sản phẩm tái chế'}</h2>
+      {/* Tên sản phẩm - Card lớn với gradient */}
+      <div className="relative bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-2xl shadow-lg shadow-green-500/20 p-6 mb-6 text-white overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        <h2 className="text-2xl font-bold relative z-10">{name || 'Sản phẩm tái chế'}</h2>
       </div>
 
       <div className="space-y-4 mb-6">
         {/* Mô tả ngắn */}
         {desc && (
-          <div className="bg-white rounded-xl shadow-md border border-green-100 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <FileText className="w-5 h-5 text-green-600" />
-              <h3 className="font-semibold text-green-700 text-lg">Mô tả ngắn</h3>
+          <div className="card-interactive p-5 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="p-1.5 bg-green-100 rounded-lg">
+                <FileText className="w-4 h-4 text-green-600" />
+              </div>
+              <h3 className="font-semibold text-green-700">Mô tả ngắn</h3>
             </div>
-            <p className="text-gray-700 leading-relaxed pl-7">{desc}</p>
+            <p className="text-gray-600 leading-relaxed pl-9">{desc}</p>
           </div>
         )}
 
         {/* Vật liệu cần có */}
         {materials.length > 0 && (
-          <div className="bg-white rounded-xl shadow-md border border-blue-100 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Wrench className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-blue-700 text-lg">Vật liệu cần có</h3>
+          <div className="card-interactive p-5 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="p-1.5 bg-blue-100 rounded-lg">
+                <Wrench className="w-4 h-4 text-blue-600" />
+              </div>
+              <h3 className="font-semibold text-blue-700">Vật liệu cần có</h3>
             </div>
-            <ul className="space-y-2 pl-7">
+            <ul className="space-y-2 pl-9">
               {materials.map((m, i) => (
-                <li key={i} className="flex gap-2 text-gray-700">
-                  <span className="text-blue-500 flex-shrink-0 leading-6">•</span>
+                <li key={i} className="flex gap-2.5 text-gray-600">
+                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2.5 flex-shrink-0" />
                   <span className="leading-6">{typeof m === 'string' ? m : m?.ten ?? m}</span>
                 </li>
               ))}
@@ -229,15 +236,17 @@ export default function RecycleSuggestion() {
 
         {/* Các bước thực hiện */}
         {steps.length > 0 && (
-          <div className="bg-white rounded-xl shadow-md border border-purple-100 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <ListOrdered className="w-5 h-5 text-purple-600" />
-              <h3 className="font-semibold text-purple-700 text-lg">Các bước thực hiện</h3>
+          <div className="card-interactive p-5 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="p-1.5 bg-purple-100 rounded-lg">
+                <ListOrdered className="w-4 h-4 text-purple-600" />
+              </div>
+              <h3 className="font-semibold text-purple-700">Các bước thực hiện</h3>
             </div>
-            <ol className="space-y-3 pl-7">
+            <ol className="space-y-3 pl-9">
               {steps.map((s, i) => (
-                <li key={i} className="flex gap-3 text-gray-700">
-                  <span className="flex-shrink-0 w-6 h-6 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-sm font-semibold">
+                <li key={i} className="flex gap-3 text-gray-600">
+                  <span className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
                     {i + 1}
                   </span>
                   <span className="leading-6">{typeof s === 'string' ? s : s?.noi_dung ?? s}</span>
@@ -249,15 +258,17 @@ export default function RecycleSuggestion() {
 
         {/* Lợi ích */}
         {benefits.length > 0 && (
-          <div className="bg-white rounded-xl shadow-md border border-green-100 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Heart className="w-5 h-5 text-green-600" />
-              <h3 className="font-semibold text-green-700 text-lg">Lợi ích</h3>
+          <div className="card-interactive p-5 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="p-1.5 bg-emerald-100 rounded-lg">
+                <Heart className="w-4 h-4 text-emerald-600" />
+              </div>
+              <h3 className="font-semibold text-emerald-700">Lợi ích</h3>
             </div>
-            <ul className="space-y-2 pl-7">
+            <ul className="space-y-2 pl-9">
               {benefits.map((b, i) => (
-                <li key={i} className="flex gap-2 text-gray-700">
-                  <span className="text-green-500 flex-shrink-0 leading-6">•</span>
+                <li key={i} className="flex gap-2.5 text-gray-600">
+                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2.5 flex-shrink-0" />
                   <span className="leading-6">{typeof b === 'string' ? b : b}</span>
                 </li>
               ))}
@@ -267,14 +278,16 @@ export default function RecycleSuggestion() {
 
         {/* Lưu ý an toàn */}
         {safety.length > 0 && (
-          <div className="bg-amber-50 rounded-xl shadow-md border-2 border-amber-200 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Shield className="w-5 h-5 text-amber-700" />
-              <h3 className="font-semibold text-amber-800 text-lg">Lưu ý an toàn</h3>
+          <div className="bg-amber-50/80 backdrop-blur-sm rounded-2xl shadow-card border-2 border-amber-200/60 p-5 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="p-1.5 bg-amber-200 rounded-lg">
+                <Shield className="w-4 h-4 text-amber-700" />
+              </div>
+              <h3 className="font-semibold text-amber-800">⚠️ Lưu ý an toàn</h3>
             </div>
-            <ul className="space-y-2 pl-7">
+            <ul className="space-y-2 pl-9">
               {safety.map((s, i) => (
-                <li key={i} className="text-amber-900 leading-6">
+                <li key={i} className="text-amber-800 leading-6 text-sm">
                   {typeof s === 'string' ? s : s}
                 </li>
               ))}
@@ -284,10 +297,10 @@ export default function RecycleSuggestion() {
       </div>
 
       {/* Nút tạo sản phẩm */}
-      <div className="bg-white rounded-xl shadow-lg border border-green-200 p-6 mb-6">
+      <div className="card-interactive p-5 mb-5">
         <button
           onClick={handleCreateProduct}
-          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 rounded-lg transition shadow-md hover:shadow-lg"
+          className="w-full btn-primary flex items-center justify-center gap-2 py-4 text-base"
         >
           <Package className="w-5 h-5" />
           Tạo sản phẩm & lưu vào Dashboard
@@ -296,16 +309,16 @@ export default function RecycleSuggestion() {
       </div>
 
       {/* Nút điều hướng */}
-      <div className="flex gap-4">
+      <div className="flex gap-3">
         <button
           onClick={() => navigate('/')}
-          className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-4 rounded-lg transition"
+          className="flex-1 btn-secondary py-3"
         >
           Nhận diện lại
         </button>
         <button
           onClick={() => navigate('/dashboard')}
-          className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition"
+          className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.98]"
         >
           Xem Green Dashboard
         </button>

@@ -1,10 +1,12 @@
 // ============================================
 // Thanh điều hướng (Navigation Bar) chung cho toàn ứng dụng
 // Hiển thị menu khác nhau tùy theo vai trò: Học sinh hoặc Admin
+// Hỗ trợ responsive: mobile hamburger menu
 // ============================================
 
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Leaf, LayoutDashboard, Camera, Sparkles, Package, Award, LogOut } from 'lucide-react'
+import { Leaf, LayoutDashboard, Camera, Sparkles, Package, Award, LogOut, Menu, X } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 
 // Component SVG tùy chỉnh: Icon hình khiên với cây bên trong (dùng cho nút Admin)
@@ -36,6 +38,20 @@ export default function Navigation() {
   const navigate = useNavigate()
   const { adminUser, logoutAdmin } = useApp()
   const isAdmin = !!adminUser  // Kiểm tra đã đăng nhập admin chưa
+  const [mobileOpen, setMobileOpen] = useState(false) // Toggle menu mobile
+  const [scrolled, setScrolled] = useState(false) // Theo dõi scroll để thêm hiệu ứng
+
+  // Theo dõi scroll để thay đổi style navbar
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Đóng mobile menu khi chuyển trang
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
 
   // Menu điều hướng cho Học sinh (4 bước: Nhận diện → Gợi ý → Tạo sản phẩm → Dashboard)
   const studentNav = [
@@ -55,30 +71,56 @@ export default function Navigation() {
   const nav = isAdmin ? adminNav : studentNav
 
   return (
-    <nav className="bg-green-600 text-white shadow-lg">
+    <nav className={`sticky top-0 z-50 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-green-600/95 backdrop-blur-md shadow-lg shadow-green-900/10' 
+        : 'bg-gradient-to-r from-green-600 to-emerald-600 shadow-md'
+    }`}>
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between h-14">
-          <Link to={isAdmin ? '/admin/model' : '/'} className="flex items-center gap-2 font-semibold">
-            <Leaf className="w-6 h-6" />
-            <span>AI ReBorn - GreenLab</span>
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link 
+            to={isAdmin ? '/admin/model' : '/'} 
+            className="flex items-center gap-2.5 font-bold text-white group"
+          >
+            <div className="p-1.5 bg-white/15 rounded-lg group-hover:bg-white/25 transition-colors duration-200">
+              <Leaf className="w-5 h-5" />
+            </div>
+            <span className="text-lg tracking-tight">AI ReBorn</span>
+            <span className="hidden sm:inline text-green-200 text-sm font-medium">GreenLab</span>
           </Link>
-          <div className="flex items-center gap-2 flex-wrap">
-            {nav.map(({ path, label, icon: Icon }) => (
-              <Link
-                key={path}
-                to={path}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium transition ${
-                  location.pathname === path ? 'bg-green-500' : 'hover:bg-green-500/80'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-              </Link>
-            ))}
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-1.5">
+            {nav.map(({ path, label, icon: Icon }) => {
+              const isActive = location.pathname === path
+              return (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${
+                    isActive 
+                      ? 'bg-white/20 text-white shadow-inner' 
+                      : 'text-green-100 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {label}
+                  {/* Active indicator dot */}
+                  {isActive && (
+                    <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
+                  )}
+                </Link>
+              )
+            })}
+
+            {/* Divider */}
+            <div className="w-px h-6 bg-white/20 mx-1" />
+
             {isAdmin ? (
               <button
                 onClick={() => { logoutAdmin(); navigate('/'); }}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium hover:bg-green-500/80 transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm text-green-100 hover:bg-red-500/20 hover:text-white transition-all duration-200"
               >
                 <LogOut className="w-4 h-4" />
                 Đăng xuất
@@ -86,14 +128,68 @@ export default function Navigation() {
             ) : (
               <Link
                 to="/admin/login"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium hover:bg-green-500/80 transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm text-green-100 hover:bg-white/10 hover:text-white transition-all duration-200"
               >
                 <ShieldTreeIcon className="w-4 h-4" />
                 Admin
               </Link>
             )}
           </div>
+
+          {/* Mobile hamburger button */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {mobileOpen && (
+          <div className="md:hidden pb-4 animate-fade-in-down">
+            <div className="bg-white/10 rounded-2xl p-2 space-y-1 backdrop-blur-sm">
+              {nav.map(({ path, label, icon: Icon }) => {
+                const isActive = location.pathname === path
+                return (
+                  <Link
+                    key={path}
+                    to={path}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 ${
+                      isActive 
+                        ? 'bg-white/20 text-white' 
+                        : 'text-green-100 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {label}
+                  </Link>
+                )
+              })}
+              
+              <div className="h-px bg-white/10 mx-2" />
+
+              {isAdmin ? (
+                <button
+                  onClick={() => { logoutAdmin(); navigate('/'); }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-green-100 hover:bg-red-500/20 hover:text-white transition-all duration-200"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Đăng xuất
+                </button>
+              ) : (
+                <Link
+                  to="/admin/login"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-green-100 hover:bg-white/10 hover:text-white transition-all duration-200"
+                >
+                  <ShieldTreeIcon className="w-5 h-5" />
+                  Admin
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )
