@@ -1,3 +1,8 @@
+// ============================================
+// Trang Quản lý Model Teachable Machine (dành cho Admin)
+// Cho phép admin thay đổi URL model AI và kiểm tra model hoạt động
+// ============================================
+
 import { useState } from 'react'
 import { Save, Play, AlertCircle, Loader2 } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
@@ -9,12 +14,14 @@ export default function ModelManager() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
 
+  // Xử lý lưu URL model mới - kiểm tra tính hợp lệ trước khi lưu
   const handleSave = () => {
     if (!inputURL.trim()) {
       setMessage({ type: 'error', text: 'Vui lòng nhập URL model.' })
       return
     }
     try {
+      // Kiểm tra URL phải thuộc domain teachablemachine.withgoogle.com
       const url = new URL(inputURL.trim())
       if (!url.hostname.includes('teachablemachine.withgoogle.com')) {
         setMessage({ type: 'error', text: 'URL phải từ teachablemachine.withgoogle.com' })
@@ -28,6 +35,7 @@ export default function ModelManager() {
     setMessage({ type: 'success', text: 'Đã lưu URL model.' })
   }
 
+  // Xử lý test model - thử load model để kiểm tra URL có hoạt động không
   const handleTest = async () => {
     setLoading(true)
     setMessage({ type: '', text: '' })

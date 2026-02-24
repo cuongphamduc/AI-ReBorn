@@ -1,8 +1,13 @@
+// ============================================
+// Thanh điều hướng (Navigation Bar) chung cho toàn ứng dụng
+// Hiển thị menu khác nhau tùy theo vai trò: Học sinh hoặc Admin
+// ============================================
+
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Leaf, LayoutDashboard, Camera, Sparkles, Package, Award, LogOut } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 
-// Icon khiên với cây bên trong
+// Component SVG tùy chỉnh: Icon hình khiên với cây bên trong (dùng cho nút Admin)
 function ShieldTreeIcon({ className }) {
   return (
     <svg
@@ -30,8 +35,9 @@ export default function Navigation() {
   const location = useLocation()
   const navigate = useNavigate()
   const { adminUser, logoutAdmin } = useApp()
-  const isAdmin = !!adminUser
+  const isAdmin = !!adminUser  // Kiểm tra đã đăng nhập admin chưa
 
+  // Menu điều hướng cho Học sinh (4 bước: Nhận diện → Gợi ý → Tạo sản phẩm → Dashboard)
   const studentNav = [
     { path: '/', label: 'Nhận diện rác', icon: Camera },
     { path: '/suggestion', label: 'Gợi ý tái chế', icon: Sparkles },
@@ -39,11 +45,13 @@ export default function Navigation() {
     { path: '/dashboard', label: 'Green Dashboard', icon: Award },
   ]
 
+  // Menu điều hướng cho Admin (Quản lý model AI và xem thống kê)
   const adminNav = [
     { path: '/admin/model', label: 'Quản lý Model', icon: Camera },
     { path: '/admin/stats', label: 'Thống kê', icon: LayoutDashboard },
   ]
 
+  // Chọn menu phù hợp dựa trên vai trò người dùng
   const nav = isAdmin ? adminNav : studentNav
 
   return (

@@ -1,3 +1,9 @@
+// ============================================
+// Trang Green Dashboard - Bảng điều khiển xanh
+// Hiển thị tổng quan: sản phẩm tái chế, Điểm Xanh, lượt nhận diện
+// Timeline hoạt động: gộp lịch sử nhận diện + tạo sản phẩm theo thời gian
+// ============================================
+
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Award, Package, Leaf, Plus, Camera } from 'lucide-react'
@@ -7,9 +13,11 @@ export default function GreenDashboard() {
   const { products, recognitionHistory } = useApp()
 
   const totalProducts = products.length
+  // Tính Điểm Xanh: mỗi sản phẩm tái chế = 10 điểm (khuyến khích tái chế)
   const greenScore = totalProducts * 10
 
-  // Timeline: gộp sự kiện (nhận diện + sản phẩm) theo thời gian, sort mới nhất trước
+  // ====== TẠO TIMELINE HOẠT ĐỘNG ======
+  // Gộp sự kiện nhận diện rác và tạo sản phẩm, sắp xếp mới nhất trước, giới hạn 20 sự kiện
   const timeline = useMemo(() => {
     const events = []
     recognitionHistory.forEach(({ label, timestamp, imageUrl }) => {
@@ -28,6 +36,7 @@ export default function GreenDashboard() {
     return events.slice(0, 20)
   }, [products, recognitionHistory])
 
+  // Hàm định dạng thời gian tương đối (VD: "5 phút trước", "2 giờ trước")
   const formatDate = (d) => {
     const now = new Date()
     const diff = now - d

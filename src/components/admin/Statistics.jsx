@@ -1,3 +1,9 @@
+// ============================================
+// Trang Thống kê (dành cho Admin)
+// Hiển thị biểu đồ thống kê nhận diện rác, quản lý lịch sử nhận diện
+// Sử dụng thư viện Recharts để vẽ biểu đồ cột và biểu đồ tròn
+// ============================================
+
 import { useState, useMemo } from 'react'
 import {
   BarChart,
@@ -14,13 +20,14 @@ import {
 import { useApp } from '../../context/AppContext'
 import { Trash2, Package, Award, AlertTriangle, X, CheckSquare, Square } from 'lucide-react'
 
+// Bảng màu cho biểu đồ tròn (top 3 loại rác phổ biến)
 const COLORS = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
 
 export default function Statistics() {
   const { recognitionHistory, products, clearRecognitionHistory, removeRecognition, removeMultipleRecognitions } = useApp()
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [selectedIds, setSelectedIds] = useState(new Set())
-  const [showHistory, setShowHistory] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)      // Hiển thị dialog xác nhận xóa
+  const [selectedIds, setSelectedIds] = useState(new Set())    // Danh sách ID đã chọn để xóa
+  const [showHistory, setShowHistory] = useState(false)        // Toggle hiển thị danh sách lịch sử
 
   const handleClear = () => {
     clearRecognitionHistory()
@@ -60,12 +67,16 @@ export default function Statistics() {
     return d.toLocaleString('vi-VN')
   }
 
+  // Tính toán dữ liệu thống kê từ lịch sử nhận diện (dùng useMemo để tối ưu hiệu năng)
   const { barData, top3, totalRecycled } = useMemo(() => {
+    // Đếm số lần nhận diện theo từng loại rác
     const countByLabel = {}
     recognitionHistory.forEach(({ label }) => {
       countByLabel[label] = (countByLabel[label] || 0) + 1
     })
+    // Chuyển đổi thành dạng mảng cho biểu đồ cột
     const barData = Object.entries(countByLabel).map(([name, count]) => ({ name, count }))
+    // Lấy top 3 loại rác có số lượng nhận diện nhiều nhất cho biểu đồ tròn
     const top3 = barData
       .sort((a, b) => b.count - a.count)
       .slice(0, 3)

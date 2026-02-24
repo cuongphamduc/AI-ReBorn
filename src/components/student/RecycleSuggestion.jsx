@@ -1,3 +1,9 @@
+// ============================================
+// Trang Gợi ý tái chế (Bước 2)
+// Gọi API AI (LLM) để lấy hướng dẫn tái chế dựa trên loại rác đã nhận diện
+// Hiển thị: tên sản phẩm, mô tả, vật liệu, các bước, lợi ích, lưu ý an toàn
+// ============================================
+
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Sparkles, Loader2, AlertCircle, ArrowRight, Package, FileText, Wrench, ListOrdered, Heart, Shield } from 'lucide-react'
@@ -5,13 +11,17 @@ import { useApp } from '../../context/AppContext'
 import { getRecycleIdea } from '../../api/llm'
 import LoadingSpinner from '../shared/LoadingSpinner'
 
-// Chuẩn hóa field từ response LLM (có thể là object hoặc array)
+// ====== HÀM TIỆN ÍCH CHUẨN HÓA DỮ LIỆU ======
+// Dữ liệu từ API AI có thể không đồng nhất (string, array, null, ...) → cần chuẩn hóa
+
+// Đảm bảo giá trị luôn là mảng (dùng cho danh sách vật liệu, bước thực hiện, ...)
 function ensureArray(val) {
   if (Array.isArray(val)) return val
   if (val == null || val === '') return []
   return [String(val)]
 }
 
+// Đảm bảo giá trị luôn là chuỗi (dùng cho mô tả, tên sản phẩm, ...)
 function ensureString(val) {
   if (val == null) return ''
   return String(val)
@@ -21,13 +31,16 @@ export default function RecycleSuggestion() {
   const location = useLocation()
   const navigate = useNavigate()
   const { conversationId, setConversationIdFromApi } = useApp()
+  // Lấy tên loại rác từ state được truyền qua React Router (từ trang Nhận diện rác)
   const wasteName = location.state?.wasteName
 
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [suggestion, setSuggestion] = useState(null)
-  const [retryCount, setRetryCount] = useState(0)
+  const [loading, setLoading] = useState(true)       // Trạng thái đang gọi API
+  const [error, setError] = useState('')              // Thông báo lỗi
+  const [suggestion, setSuggestion] = useState(null)  // Dữ liệu gợi ý tái chế từ AI
+  const [retryCount, setRetryCount] = useState(0)     // Số lần thử lại (trigger useEffect)
 
+  // ====== GỌI API LẤY GỢI Ý TÁI CHẾ ======
+  // Tự động gọi khi có wasteName mới hoặc khi người dùng nhấn "Thử lại"
   useEffect(() => {
     if (!wasteName) {
       setError('Không có thông tin loại rác. Hãy nhận diện rác trước.')
@@ -41,12 +54,10 @@ export default function RecycleSuggestion() {
 
     const call = async () => {
       try {
-        // Luôn reset conversationId khi có wasteName mới để bắt đầu conversation mới
-        // Chỉ dùng conversationId cũ khi retry (retryCount > 0)
+        // Reset conversationId khi có wasteName mới để bắt đầu cuộc hội thoại mới
+        // Chỉ giữ conversationId cũ khi retry để AI nhớ ngữ cảnh
         const freshConversationId = retryCount === 0 ? '' : conversationId
-        console.log('🟡 Calling API with wasteName:', wasteName, 'conversationId:', freshConversationId, 'retryCount:', retryCount)
         const { suggestion: s, conversationId: cid } = await getRecycleIdea(wasteName, freshConversationId)
-        console.log('🟡 Received suggestion:', s)
         if (!cancelled) {
           setSuggestion(s)
           setConversationIdFromApi(cid)
@@ -125,7 +136,7 @@ export default function RecycleSuggestion() {
     )
   }
 
-  // Nếu không có suggestion sau khi load xong, hiển thị lỗi
+  // Nếu không có dữ liệu gợi ý sau khi load xong → hiển thị lỗi
   if (!suggestion && !loading) {
     return (
       <div className="max-w-2xl mx-auto p-6">
@@ -151,20 +162,23 @@ export default function RecycleSuggestion() {
     )
   }
 
-  // Hỗ trợ cả camelCase (từ API thực tế) và snake_case
+  // ====== TRÍCH XUẤT DỮ LIỆU TỪ PHẢN HỒI AI ======
+  // API có thể trả về camelCase hoặc snake_case → hỗ trợ cả 2 format
   const name = ensureString(
     suggestion?.tenVatDung ?? suggestion?.ten_vat_dung ?? suggestion?.name ?? wasteName
   )
   const desc = ensureString(
     suggestion?.moTaNgan ?? suggestion?.mo_ta ?? suggestion?.mo_ta_ngan ?? suggestion?.description ?? ''
   )
+  // Danh sách vật liệu cần chuẩn bị
   const materials = ensureArray(
     suggestion?.vatLieuCanCo ?? suggestion?.vat_lieu ?? suggestion?.materials ?? []
   )
+  // Các bước hướng dẫn thực hiện tái chế
   const steps = ensureArray(
     suggestion?.cacBuocThucHien ?? suggestion?.cac_buoc ?? suggestion?.steps ?? []
   )
-  // loiIch và luuYAnToan có thể là string hoặc array
+  // Lợi ích và lưu ý an toàn - có thể là string hoặc array tùy phản hồi AI
   const benefitsRaw = suggestion?.loiIch ?? suggestion?.loi_ich ?? suggestion?.benefits
   const benefits = Array.isArray(benefitsRaw) ? benefitsRaw : benefitsRaw ? [benefitsRaw] : []
   const safetyRaw = suggestion?.luuYAnToan ?? suggestion?.luu_y_an_toan ?? suggestion?.safety

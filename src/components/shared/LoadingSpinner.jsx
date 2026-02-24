@@ -1,6 +1,12 @@
+// ============================================
+// Component Loading Spinner - Hiển thị animation xoay khi đang tải dữ liệu
+// Hỗ trợ 3 kích thước: sm (nhỏ), md (trung bình), lg (lớn)
+// ============================================
+
 import { Loader2 } from 'lucide-react'
 
 export default function LoadingSpinner({ size = 'md', label }) {
+  // Xác định class CSS dựa trên kích thước
   const sizeClass = size === 'sm' ? 'w-5 h-5' : size === 'lg' ? 'w-12 h-12' : 'w-8 h-8'
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-6">

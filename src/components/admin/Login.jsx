@@ -1,23 +1,33 @@
+// ============================================
+// Trang đăng nhập Admin
+// Cho phép admin đăng nhập để quản lý model AI và xem thống kê
+// ============================================
+
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Leaf, LogIn } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 
 export default function Login() {
+  // State quản lý form đăng nhập
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const { loginAdmin } = useApp()
   const navigate = useNavigate()
 
+  // Xử lý khi người dùng submit form đăng nhập
   const handleSubmit = (e) => {
     e.preventDefault()
     setError('')
+    // Gọi hàm đăng nhập từ AppContext - kiểm tra thông tin đăng nhập
     const ok = loginAdmin(username, password)
     if (ok) {
+      // Đăng nhập thành công → chuyển đến trang quản lý model
       navigate('/admin/model')
     } else {
-      setError('Sai tên đăng nhập hoặc mật khẩu. Thử: admin / admin')
+      // Thông báo lỗi chung - KHÔNG tiết lộ tài khoản/mật khẩu đúng
+      setError('Sai tên đăng nhập hoặc mật khẩu.')
     }
   }
 
@@ -60,7 +70,6 @@ export default function Login() {
             Đăng nhập
           </button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-500">Demo: admin / admin</p>
       </div>
     </div>
   )

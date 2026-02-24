@@ -1,3 +1,8 @@
+// ============================================
+// Trang Tạo sản phẩm tái chế (Bước 3)
+// Cho phép học sinh nhập tên, loại rác, ảnh sản phẩm và lưu vào Dashboard
+// ============================================
+
 import { useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Package, Upload, Loader2, CheckCircle } from 'lucide-react'
@@ -7,18 +12,21 @@ export default function ProductCreation() {
   const location = useLocation()
   const navigate = useNavigate()
   const { addProduct } = useApp()
-  const fileInputRef = useRef(null)
+  const fileInputRef = useRef(null)  // Tham chiếu đến input file ẩn
 
+  // Lấy dữ liệu gợi ý và tên loại rác từ trang trước (truyền qua Router state)
   const suggestion = location.state?.suggestion
   const wasteName = location.state?.wasteName || ''
 
+  // State form nhập liệu
   const [name, setName] = useState(suggestion?.ten_vat_dung ?? suggestion?.name ?? '')
   const [wasteType, setWasteType] = useState(wasteName)
-  const [image, setImage] = useState(null) // base64 data URL
-  const [saving, setSaving] = useState(false)
-  const [done, setDone] = useState(false)
-  const [error, setError] = useState('')
+  const [image, setImage] = useState(null)     // Ảnh sản phẩm dạng base64 data URL
+  const [saving, setSaving] = useState(false)   // Trạng thái đang lưu
+  const [done, setDone] = useState(false)       // Đã lưu thành công
+  const [error, setError] = useState('')        // Thông báo lỗi
 
+  // Xử lý khi người dùng chọn ảnh sản phẩm
   const handleImageChange = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -32,6 +40,7 @@ export default function ProductCreation() {
     reader.readAsDataURL(file)
   }
 
+  // Xử lý submit form - lưu sản phẩm vào Context (và localStorage)
   const handleSubmit = (e) => {
     e.preventDefault()
     setError('')
@@ -40,6 +49,7 @@ export default function ProductCreation() {
       return
     }
     setSaving(true)
+    // Thêm sản phẩm mới vào danh sách (Context sẽ tự lưu vào localStorage)
     addProduct({
       name: name.trim(),
       wasteType: wasteType || 'Khác',
