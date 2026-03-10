@@ -11,7 +11,7 @@ const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || 'admin'
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin'
 
 // Giá trị mặc định cho Model URL (Teachable Machine - mô hình nhận diện ảnh của Google)
-const DEFAULT_MODEL_URL = 'https://teachablemachine.withgoogle.com/models/p3E_Hv3cb/'
+const DEFAULT_MODEL_URL = 'https://teachablemachine.withgoogle.com/models/_aLcx-13S/'
 
 // Các key lưu trữ trong localStorage để dữ liệu không bị mất khi tải lại trang
 const MODEL_URL_STORAGE_KEY = 'aireborn_model_url'

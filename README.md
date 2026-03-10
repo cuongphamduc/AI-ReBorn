@@ -53,21 +53,29 @@ copy .env.example .env
 ```properties
 # API Key cho LLM Chat (Dify / PTIT AI Chat)
 VITE_LLM_API_URL=https://aichat.ptit.edu.vn/v1/chat-messages
-VITE_LLM_API_KEY=your_api_key_here          # ← Thay bằng API Key thật
+VITE_LLM_API_KEY=your_api_key_here                # ← Thay bằng API Key thật
+
+# URL mặc định Teachable Machine Model
+VITE_DEFAULT_MODEL_URL=https://teachablemachine.withgoogle.com/models/_aLcx-13S/
 
 # Thông tin đăng nhập Admin
-VITE_ADMIN_USERNAME=admin                     # ← Tên đăng nhập admin
-VITE_ADMIN_PASSWORD=your_secure_password_here # ← Thay bằng mật khẩu an toàn
+VITE_ADMIN_USERNAME=admin                          # ← Tên đăng nhập admin
+VITE_ADMIN_PASSWORD=your_secure_password_here      # ← Thay bằng mật khẩu an toàn
 ```
 
 | Biến | Mô tả |
 |------|-------|
 | `VITE_LLM_API_URL` | URL endpoint của API LLM (Dify Chat) |
 | `VITE_LLM_API_KEY` | API Key xác thực, lấy từ trang quản trị Dify |
+| `VITE_DEFAULT_MODEL_URL` | URL model Teachable Machine mặc định (có thể đổi trong trang Admin) |
 | `VITE_ADMIN_USERNAME` | Tên đăng nhập trang quản trị |
 | `VITE_ADMIN_PASSWORD` | Mật khẩu trang quản trị |
 
 > ⚠️ **Lưu ý bảo mật:** Không bao giờ commit file `.env` lên Git. File `.gitignore` đã được cấu hình để bỏ qua file này.
+
+> 💡 **Cách lấy API Key Dify:** Đăng nhập trang quản trị Dify → vào ứng dụng AI Chat → mục "API Access" → sao chép API Key (dạng `app-xxxx...`).
+
+> 💡 **Cách lấy URL Teachable Machine:** Vào [Teachable Machine](https://teachablemachine.withgoogle.com/) → tạo/mở model → nhấn "Export Model" → chọn tab "Tensorflow.js" → "Upload my model" → sao chép link (dạng `https://teachablemachine.withgoogle.com/models/xxx/`).
 
 ### 4. Chạy ứng dụng (chế độ phát triển)
 
