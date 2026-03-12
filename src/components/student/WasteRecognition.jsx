@@ -25,6 +25,8 @@ export default function WasteRecognition() {
   const modelRef = useRef(null)      // Model AI đã load (giữ qua các lần render)
   const loopRef = useRef(null)       // ID của requestAnimationFrame (dùng để hủy loop)
   const capturedRef = useRef(false)  // Cờ đánh dấu đã chụp ảnh - dừng vòng lặp prediction
+  const resultRef = useRef(null)     // Tham chiếu đến phần kết quả để auto scroll
+  const shouldScrollRef = useRef(false) // Chỉ scroll khi chụp ảnh/upload, không scroll khi real-time
 
   const [loading, setLoading] = useState(false)        // Trạng thái đang tải model
   const [error, setError] = useState('')                // Thông báo lỗi
@@ -32,6 +34,15 @@ export default function WasteRecognition() {
   const [previewImage, setPreviewImage] = useState(null) // Data URL ảnh đã chụp/upload để hiển thị
   const [webcamOk, setWebcamOk] = useState(false)       // Webcam đã sẵn sàng chưa
   const [mode, setMode] = useState('webcam')            // Chế độ: 'webcam' hoặc 'upload'
+
+  // ====== AUTO SCROLL KHI CÓ KẾT QUẢ ======
+  // Chỉ cuộn xuống khi chụp ảnh hoặc upload (không scroll khi real-time prediction)
+  useEffect(() => {
+    if (result && resultRef.current && shouldScrollRef.current) {
+      shouldScrollRef.current = false
+      resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [result])
 
   // ====== KHỞI TẠO MODEL AI ======
   // Tự động load model khi vào trang hoặc khi modelURL thay đổi
@@ -216,6 +227,7 @@ export default function WasteRecognition() {
         setError(`Cảnh báo: Class "${top.className}" không hợp lệ. Model có thể đã thay đổi. Vui lòng reload trang.`)
       }
       // Lưu kết quả nhận diện và thêm vào lịch sử
+      shouldScrollRef.current = true
       setResult({ label: top.className, confidence: top.probability })
       addRecognition(top.className, top.probability, dataUrl)
     }).catch((err) => {
@@ -257,6 +269,7 @@ export default function WasteRecognition() {
             setError(`Cảnh báo: Class "${top.className}" không hợp lệ. Model có thể đã thay đổi. Vui lòng reload trang.`)
           }
           // Lưu kết quả và thêm vào lịch sử nhận diện
+          shouldScrollRef.current = true
           setResult({ label: top.className, confidence: top.probability })
           addRecognition(top.className, top.probability, dataUrl)
         }).catch((err) => {
@@ -455,7 +468,7 @@ export default function WasteRecognition() {
       )}
 
       {result && (
-        <div className="mt-5 card-interactive p-5 animate-fade-in-up">
+        <div ref={resultRef} className="mt-5 card-interactive p-5 animate-fade-in-up">
           {previewImage && (
             <div className="mb-4">
               <img

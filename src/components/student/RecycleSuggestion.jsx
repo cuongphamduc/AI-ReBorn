@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Sparkles, Loader2, AlertCircle, ArrowRight, Package, FileText, Wrench, ListOrdered, Heart, Shield } from 'lucide-react'
+import { Sparkles, Loader2, AlertCircle, ArrowRight, Package, FileText, Wrench, ListOrdered, Heart, Shield, Lightbulb } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { getRecycleIdea } from '../../api/llm'
 import LoadingSpinner from '../shared/LoadingSpinner'
@@ -177,6 +177,8 @@ export default function RecycleSuggestion() {
   const benefits = Array.isArray(benefitsRaw) ? benefitsRaw : benefitsRaw ? [benefitsRaw] : []
   const safetyRaw = suggestion?.luuYAnToan ?? suggestion?.luu_y_an_toan ?? suggestion?.safety
   const safety = Array.isArray(safetyRaw) ? safetyRaw : safetyRaw ? [safetyRaw] : []
+  const tipsRaw = suggestion?.loiKhuyenGiamRac ?? suggestion?.loi_khuyen_giam_rac
+  const tips = Array.isArray(tipsRaw) ? tipsRaw : tipsRaw ? [tipsRaw] : []
 
   return (
     <div className="max-w-3xl mx-auto p-6 animate-fade-in-up">
@@ -276,9 +278,29 @@ export default function RecycleSuggestion() {
           </div>
         )}
 
+        {/* Lời khuyên giảm rác */}
+        {tips.length > 0 && (
+          <div className="card-interactive p-5 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="p-1.5 bg-yellow-100 rounded-lg">
+                <Lightbulb className="w-4 h-4 text-yellow-600" />
+              </div>
+              <h3 className="font-semibold text-yellow-700">Lời khuyên giảm rác</h3>
+            </div>
+            <ul className="space-y-2 pl-9">
+              {tips.map((t, i) => (
+                <li key={i} className="flex gap-2.5 text-gray-600">
+                  <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full mt-2.5 flex-shrink-0" />
+                  <span className="leading-6">{typeof t === 'string' ? t : t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Lưu ý an toàn */}
         {safety.length > 0 && (
-          <div className="bg-amber-50/80 backdrop-blur-sm rounded-2xl shadow-card border-2 border-amber-200/60 p-5 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+          <div className="bg-amber-50/80 backdrop-blur-sm rounded-2xl shadow-card border-2 border-amber-200/60 p-5 animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <div className="flex items-center gap-2.5 mb-3">
               <div className="p-1.5 bg-amber-200 rounded-lg">
                 <Shield className="w-4 h-4 text-amber-700" />
