@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Award, Package, Leaf, Plus, Camera, X, Calendar, Recycle } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
+import LazyImage from '../shared/LazyImage'
 
 export default function GreenDashboard() {
   const { products, recognitionHistory } = useApp()
@@ -127,13 +128,16 @@ export default function GreenDashboard() {
               onClick={() => setSelectedProduct(p)}
               className="card-interactive overflow-hidden group cursor-pointer"
             >
-              <div className="aspect-square bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center overflow-hidden">
-                {p.image ? (
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                ) : (
-                  <Package className="w-10 h-10 text-green-300" />
-                )}
-              </div>
+              <LazyImage
+                src={p.image}
+                alt={p.name}
+                className="aspect-square group-hover:scale-105 transition-transform duration-500"
+                fallback={
+                  <div className="aspect-square bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center">
+                    <Package className="w-10 h-10 text-green-300" />
+                  </div>
+                }
+              />
               <div className="p-3">
                 <p className="font-semibold text-gray-800 truncate text-sm">{p.name}</p>
                 <p className="text-xs text-gray-400">{p.wasteType}</p>
@@ -157,16 +161,16 @@ export default function GreenDashboard() {
           {timeline.map((ev, i) => (
             <div key={i} className="flex items-center gap-4 p-4 hover:bg-green-50/30 transition-colors duration-200">
               {ev.type === 'recognition' && ev.imageUrl ? (
-                <img
+                <LazyImage
                   src={ev.imageUrl}
                   alt={ev.label}
-                  className="w-11 h-11 rounded-xl object-cover border-2 border-blue-100 shrink-0 shadow-sm"
+                  className="w-11 h-11 rounded-xl border-2 border-blue-100 shrink-0 shadow-sm"
                 />
               ) : ev.type === 'product' && ev.image ? (
-                <img
+                <LazyImage
                   src={ev.image}
                   alt={ev.name}
-                  className="w-11 h-11 rounded-xl object-cover border-2 border-green-100 shrink-0 shadow-sm"
+                  className="w-11 h-11 rounded-xl border-2 border-green-100 shrink-0 shadow-sm"
                 />
               ) : (
                 <div
@@ -211,17 +215,16 @@ export default function GreenDashboard() {
           >
             {/* Header với nút đóng */}
             <div className="relative">
-              {selectedProduct.image ? (
-                <img 
-                  src={selectedProduct.image} 
-                  alt={selectedProduct.name} 
-                  className="w-full h-64 object-cover"
-                />
-              ) : (
-                <div className="w-full h-64 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
-                  <Package className="w-20 h-20 text-green-300" />
-                </div>
-              )}
+              <LazyImage
+                src={selectedProduct.image}
+                alt={selectedProduct.name}
+                className="w-full h-64"
+                fallback={
+                  <div className="w-full h-64 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+                    <Package className="w-20 h-20 text-green-300" />
+                  </div>
+                }
+              />
               <button
                 onClick={() => setSelectedProduct(null)}
                 className="absolute top-3 right-3 p-2 bg-black/30 hover:bg-black/50 rounded-full text-white transition-colors"

@@ -78,6 +78,11 @@ body {
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
   }
+
+  /* Skeleton shimmer for lazy loading */
+  .skeleton-shimmer {
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
 }
 
 /* ====== CARD HOVER EFFECTS ====== */
@@ -177,4 +182,10 @@ body {
 
 .gradient-border:hover::before {
   opacity: 1;
+}
+
+/* ====== SKELETON SHIMMER KEYFRAME ====== */
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
