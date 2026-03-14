@@ -18,6 +18,122 @@ const DEFAULT_MODEL_URL = import.meta.env.VITE_DEFAULT_MODEL_URL || 'https://tea
 const MODEL_URL_STORAGE_KEY = 'aireborn_model_url'
 const PRODUCTS_STORAGE_KEY = 'aireborn_products'
 const RECOGNITION_HISTORY_STORAGE_KEY = 'aireborn_recognition_history'
+const SEED_VERSION_KEY = 'aireborn_seed_version'
+const CURRENT_SEED_VERSION = 3 // Tăng version khi cần force refresh seed data
+
+// ====== DỮ LIỆU MẪU BAN ĐẦU ======
+// Seed data hiển thị sẵn trên Dashboard khi người dùng lần đầu mở app
+// Đường dẫn ảnh dùng encodeURIComponent để xử lý đúng tên file tiếng Việt
+// import.meta.env.BASE_URL tự động lấy base path từ vite.config.js
+const imgPath = (filename) => `${import.meta.env.BASE_URL}images/${encodeURIComponent(filename)}`
+
+const SEED_PRODUCTS = [
+  {
+    id: 'seed-1',
+    name: 'Ví đựng bút từ bao bì snack',
+    wasteType: 'Bao bì snack',
+    image: imgPath('Bao bì snack 1.png'),
+    createdAt: new Date(Date.now() - 7 * 24 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-2',
+    name: 'Mô hình trực thăng từ bút bi hết mực',
+    wasteType: 'Bút bi hết mực',
+    image: imgPath('Bút bi hết mực 1.png'),
+    createdAt: new Date(Date.now() - 6 * 24 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-3',
+    name: 'Giá đỡ điện thoại từ bút bi hết mực',
+    wasteType: 'Bút bi hết mực',
+    image: imgPath('Bút bi hết mực 2.png'),
+    createdAt: new Date(Date.now() - 6 * 24 * 3600000 + 3600000).toISOString(),
+  },
+  {
+    id: 'seed-4',
+    name: 'Chậu cây mini từ bút chì gãy',
+    wasteType: 'Bút chì gãy',
+    image: imgPath('Bút chì gãy 1.png'),
+    createdAt: new Date(Date.now() - 5 * 24 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-5',
+    name: 'Chậu cây treo từ chai nước ngọt',
+    wasteType: 'Chai nước ngọt',
+    image: imgPath('Chai nước ngọt 1.png'),
+    createdAt: new Date(Date.now() - 4 * 24 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-6',
+    name: 'Ống đựng bút từ chai nước suối',
+    wasteType: 'Chai nước suối',
+    image: imgPath('Chai nước suối 1.png'),
+    createdAt: new Date(Date.now() - 4 * 24 * 3600000 + 3600000).toISOString(),
+  },
+  {
+    id: 'seed-7',
+    name: 'Bình tưới cây từ chai nước suối',
+    wasteType: 'Chai nước suối',
+    image: imgPath('Chai nước suối 2.png'),
+    createdAt: new Date(Date.now() - 3 * 24 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-8',
+    name: 'Hộp ghi chú để bàn từ giấy nháp',
+    wasteType: 'Giấy nháp',
+    image: imgPath('Giấy nháp 1.png'),
+    createdAt: new Date(Date.now() - 3 * 24 * 3600000 + 7200000).toISOString(),
+  },
+  {
+    id: 'seed-9',
+    name: 'Flashcard học tập từ giấy nháp',
+    wasteType: 'Giấy nháp',
+    image: imgPath('Giấy nháp 2.png'),
+    createdAt: new Date(Date.now() - 3 * 24 * 3600000 + 10800000).toISOString(),
+  },
+  {
+    id: 'seed-10',
+    name: 'Sổ vẽ mini từ giấy nháp',
+    wasteType: 'Giấy nháp',
+    image: imgPath('Giấy nháp 3.png'),
+    createdAt: new Date(Date.now() - 2 * 24 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-11',
+    name: 'Chậu cây từ hộp sữa giấy',
+    wasteType: 'Hộp sữa giấy',
+    image: imgPath('Hộp sữa giấy 1.png'),
+    createdAt: new Date(Date.now() - 2 * 24 * 3600000 + 3600000).toISOString(),
+  },
+  {
+    id: 'seed-12',
+    name: 'Hộp đựng bút từ ly nhựa trà sữa',
+    wasteType: 'Ly nhựa trà sữa',
+    image: imgPath('Ly nhựa trà sữa.png'),
+    createdAt: new Date(Date.now() - 1 * 24 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-13',
+    name: 'Trò chơi toán học từ nắp chai',
+    wasteType: 'Nắp chai',
+    image: imgPath('Nắp chai 1.png'),
+    createdAt: new Date(Date.now() - 1 * 24 * 3600000 + 3600000).toISOString(),
+  },
+  {
+    id: 'seed-14',
+    name: 'Dây nhựa tái chế từ túi nilon',
+    wasteType: 'Túi nilon',
+    image: imgPath('Túi nilon 1.png'),
+    createdAt: new Date(Date.now() - 12 * 3600000).toISOString(),
+  },
+  {
+    id: 'seed-15',
+    name: 'Khung ảnh mini từ ống hút',
+    wasteType: 'Ống hút',
+    image: imgPath('Ống hút 1.png'),
+    createdAt: new Date(Date.now() - 6 * 3600000).toISOString(),
+  },
+]
 
 // Tạo React Context để chia sẻ state giữa các component con
 const AppContext = createContext(null)
@@ -39,13 +155,23 @@ export function AppProvider({ children }) {
   })
 
   // ====== DANH SÁCH SẢN PHẨM TÁI CHẾ ======
-  // Các sản phẩm tái chế đã được người dùng tạo - Load từ localStorage
+  // Các sản phẩm tái chế đã được người dùng tạo - Load từ localStorage, fallback về seed data
   const [products, setProducts] = useState(() => {
     try {
+      // Kiểm tra version seed data - nếu version cũ thì xóa để load lại seed mới
+      const savedVersion = localStorage.getItem(SEED_VERSION_KEY)
+      if (!savedVersion || parseInt(savedVersion, 10) < CURRENT_SEED_VERSION) {
+        localStorage.removeItem(PRODUCTS_STORAGE_KEY)
+        localStorage.setItem(SEED_VERSION_KEY, String(CURRENT_SEED_VERSION))
+        return SEED_PRODUCTS
+      }
+      
       const saved = localStorage.getItem(PRODUCTS_STORAGE_KEY)
-      return saved ? JSON.parse(saved) : []
+      if (!saved) return SEED_PRODUCTS
+      const parsed = JSON.parse(saved)
+      return parsed
     } catch {
-      return []
+      return SEED_PRODUCTS
     }
   })
 

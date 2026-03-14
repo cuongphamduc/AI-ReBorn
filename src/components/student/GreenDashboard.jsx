@@ -4,13 +4,14 @@
 // Timeline hoạt động: gộp lịch sử nhận diện + tạo sản phẩm theo thời gian
 // ============================================
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Award, Package, Leaf, Plus, Camera } from 'lucide-react'
+import { Award, Package, Leaf, Plus, Camera, X, Calendar, Recycle } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 
 export default function GreenDashboard() {
   const { products, recognitionHistory } = useApp()
+  const [selectedProduct, setSelectedProduct] = useState(null) // Sản phẩm đang xem chi tiết
 
   const totalProducts = products.length
   // Tính Điểm Xanh: mỗi sản phẩm tái chế = 10 điểm (khuyến khích tái chế)
@@ -123,7 +124,8 @@ export default function GreenDashboard() {
           {products.map((p) => (
             <div
               key={p.id}
-              className="card-interactive overflow-hidden group"
+              onClick={() => setSelectedProduct(p)}
+              className="card-interactive overflow-hidden group cursor-pointer"
             >
               <div className="aspect-square bg-gradient-to-br from-green-50 to-emerald-50 flex items-center justify-center overflow-hidden">
                 {p.image ? (
@@ -194,6 +196,89 @@ export default function GreenDashboard() {
               <span className="text-xs text-gray-400 shrink-0">{formatDate(ev.date)}</span>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal chi tiết sản phẩm */}
+      {selectedProduct && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setSelectedProduct(null)}
+        >
+          <div 
+            className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden animate-fade-in-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header với nút đóng */}
+            <div className="relative">
+              {selectedProduct.image ? (
+                <img 
+                  src={selectedProduct.image} 
+                  alt={selectedProduct.name} 
+                  className="w-full h-64 object-cover"
+                />
+              ) : (
+                <div className="w-full h-64 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+                  <Package className="w-20 h-20 text-green-300" />
+                </div>
+              )}
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="absolute top-3 right-3 p-2 bg-black/30 hover:bg-black/50 rounded-full text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              {/* Badge loại rác */}
+              <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium text-green-700 shadow-md">
+                <span className="flex items-center gap-1.5">
+                  <Recycle className="w-4 h-4" />
+                  {selectedProduct.wasteType}
+                </span>
+              </div>
+            </div>
+
+            {/* Nội dung */}
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">{selectedProduct.name}</h3>
+              
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
+                <Calendar className="w-4 h-4" />
+                <span>Tạo ngày {new Date(selectedProduct.createdAt).toLocaleDateString('vi-VN', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}</span>
+              </div>
+
+              {/* Thông tin thêm */}
+              <div className="bg-green-50 rounded-xl p-4 mb-4">
+                <p className="text-green-700 text-sm">
+                  🌱 Sản phẩm này được tái chế từ <strong>{selectedProduct.wasteType}</strong>, 
+                  góp phần giảm thiểu rác thải và bảo vệ môi trường!
+                </p>
+              </div>
+
+              {/* Điểm xanh */}
+              <div className="flex items-center justify-between p-3 bg-amber-50 rounded-xl">
+                <span className="text-amber-700 font-medium text-sm">Điểm Xanh nhận được</span>
+                <span className="flex items-center gap-1 text-amber-600 font-bold">
+                  <Award className="w-5 h-5" />
+                  +10
+                </span>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 pb-6">
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="w-full btn-primary py-3"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
